@@ -1,113 +1,114 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="bg-light-gray text-dark-gray font-sans">
+      {/* Header */}
+      <header className="bg-light-gray text-dark-gray py-6 shadow-md">
+        <div className="container mx-auto flex justify-between items-center px-4">
+          <h1 className="text-3xl font-bold">me<span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">moo</span>rize</h1>
+          <nav className="flex items-center space-x-6">
+            <a href="#" className="hover:text-accent-pink">Features</a>
+            <a href="#" className="hover:text-accent-pink">Pricing</a>
+            <a href="#" className="hover:text-accent-pink">Contact</a>
+            <a href="/sign-in" className="text-primary-purple py-2 px-4 border border-primary-purple rounded-lg hover:text-muted-purple hover:border-muted-purple">Sign In</a>
+            <a href="/sign-up" className="bg-gradient-to-r text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l">Sign Up</a>
+          </nav>
         </div>
-      </div>
+      </header>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      {/* Hero Section */}
+      <section className="bg-light-gray text-left py-20 text-dark-gray">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center">
+            <div className="md:w-1/2">
+              <h2 className="text-5xl font-bold mb-4">Develop Your Skills with AI-Powered Flashcards</h2>
+              <p className="text-xl mb-8">memoorize helps you turn your text into interactive flashcards, making learning more engaging and effective.</p>
+              <a href="#" className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-3 px-8 rounded-lg hover:bg-gradient-to-l">Get Started</a>
+            </div>
+            <div className="md:w-1/2 mt-8 md:mt-0">
+              {/* to-do: add hero image */}
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {/* Features Section */}
+      <section className="bg-gradient-to-l py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-4xl font-bold mb-8">Why Choose memoorize?</h3>
+          <div className="flex flex-wrap -mx-4">
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="p-8 bg-white rounded-lg shadow-lg">
+                <h4 className="text-2xl font-bold mb-4">AI-Powered Flashcards</h4>
+                <p>Our AI turns your text into flashcards in seconds, making study sessions more productive.</p>
+              </div>
+            </div>
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="p-8 bg-white rounded-lg shadow-lg">
+                <h4 className="text-2xl font-bold mb-4">Customizable Learning</h4>
+                <p>Tailor your flashcards to your specific learning needs, ensuring you get the most out of your study time.</p>
+              </div>
+            </div>
+            <div className="w-full md:w-1/3 px-4">
+              <div className="p-8 bg-white rounded-lg shadow-lg">
+                <h4 className="text-2xl font-bold mb-4">Track Your Progress</h4>
+                <p>Monitor your learning journey and see how much you've improved over time with detailed analytics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+      {/* Pricing Section */}
+      <section className="py-20 text-dark-gray">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-4xl font-bold mb-8">Affordable Pricing Plans</h3>
+          <div className="flex flex-wrap -mx-4">
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="p-8 bg-white rounded-lg shadow-lg text-dark-gray">
+                <h4 className="text-2xl font-bold mb-4">Basic</h4>
+                <p className="text-xl">$9.99/month</p>
+                <ul className="mt-4 text-left">
+                  <li className="mb-2">Unlimited Flashcards</li>
+                  <li className="mb-2">Custom Themes</li>
+                  <li className="mb-2">Progress Tracking</li>
+                </ul>
+                <a href="#" className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l mt-6 inline-block">Get Started</a>
+              </div>
+            </div>
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="p-8 bg-white rounded-lg shadow-lg text-dark-gray">
+                <h4 className="text-2xl font-bold mb-4">Pro</h4>
+                <p className="text-xl">$19.99/month</p>
+                <ul className="mt-4 text-left">
+                  <li className="mb-2">All Basic Features</li>
+                  <li className="mb-2">Advanced AI Features</li>
+                  <li className="mb-2">Priority Support</li>
+                </ul>
+                <a href="#" className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l mt-6 inline-block">Get Started</a>
+              </div>
+            </div>
+            <div className="w-full md:w-1/3 px-4">
+              <div className="p-8 bg-white rounded-lg shadow-lg text-dark-gray">
+                <h4 className="text-2xl font-bold mb-4">Enterprise</h4>
+                <p className="text-xl">Contact Us</p>
+                <ul className="mt-4 text-left">
+                  <li className="mb-2">All Pro Features</li>
+                  <li className="mb-2">Custom Integrations</li>
+                  <li className="mb-2">Dedicated Account Manager</li>
+                </ul>
+                <a href="#" className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l mt-6 inline-block">Contact Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      {/* Footer */}
+      <footer className="bg-gradient-to-l bg-dark-gray text-white py-6">
+        <div className="container mx-auto text-center px-4">
+          <p>&copy; 2024 memoorize. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   );
 }
