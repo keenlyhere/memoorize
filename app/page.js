@@ -20,7 +20,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2">
-              <h2 className="text-5xl font-bold mb-4">Develop Your Skills with AI-Powered Flashcards</h2>
+              <h2 className="text-6xl font-bold mb-4">Develop Your Skills with AI-Powered Flashcards</h2>
               <p className="text-xl mb-8">memoorize helps you turn your text into interactive flashcards, making learning more engaging and effective.</p>
               <a href="#" className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-3 px-8 rounded-lg hover:bg-gradient-to-l">Get Started</a>
             </div>
@@ -34,7 +34,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="bg-gradient-to-l py-20">
         <div className="container mx-auto px-4 text-center">
-          <h3 className="text-4xl font-bold mb-8">Why Choose memoorize?</h3>
+          <h3 className="text-4xl font-bold mb-8 text-light-gray">Why Choose me<span className="text-muted-purple">moo</span>rize?</h3>
           <div className="flex flex-wrap -mx-4">
             <div className="w-full md:w-1/3 px-4 mb-8">
               <div className="p-8 bg-white rounded-lg shadow-lg">
