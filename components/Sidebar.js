@@ -1,21 +1,28 @@
 'use client'
 
 import { usePathname } from "next/navigation"
-import { useUser } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function Sidebar() {
     const currentPage = usePathname();
-    const { user } = useUser();
+    const user = useAppSelector((state) => state.user);
+    const [ isLoaded, setIsLoaded ] = useState(false);
     const [ isOpen, setIsOpen ] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            setIsLoaded(true);
+        }
+    }, [user, setIsLoaded]);
 
     useEffect(() => {
         if (currentPage === '/courses' || currentPage === '/sets') {
             setIsOpen(true);
         }
     }, [currentPage])
-
 
   return (
         <div className="lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:flex lg:flex-col lg:shadow-lg lg:space-y-4 lg:px-4 lg:py-6 lg:block lg:overflow-y-auto lg:border-0 fixed bottom-0 left-0 z-50 w-full h-20 bg-white border-t border-gray-200 dark:bg-dark-gray dark:border-gray-600">
@@ -77,8 +84,13 @@ export default function Sidebar() {
             </div>
             {/* user info */}
             <div className="lg:flex w-full items-center gap-4 hidden">
-                { user ? (
-                    <img src={user?.imageUrl} alt="User Avatar" className="w-10 h-10 rounded-full" />
+                <SignOutButton>
+                    <button className="w-full text-primary-purple py-2 px-4 border border-primary-purple bg-white/75 rounded-lg hover:text-muted-purple hover:border-muted-purple">Sign out</button>
+                </SignOutButton>
+            </div>
+            <div className="lg:flex w-full items-center gap-4 hidden">
+                { isLoaded ? (
+                    <img src={user?.avatar} alt="User Avatar" className="w-10 h-10 rounded-full" />
                 ) : (
                     <div className="w-10 h-10 rounded-full bg-gray-300" />
                 )}
