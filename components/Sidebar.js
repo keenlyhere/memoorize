@@ -50,7 +50,7 @@ export default function Sidebar({ user }) {
                     className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-between lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/courses' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <div className="lg:flex lg:items-center">
+                    <div className="flex lg:flex-row flex-col justify-center items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/courses' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
                             <path d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002c-.114.06-.227.119-.34.18a.75.75 0 0 1-.707 0A50.88 50.88 0 0 0 7.5 12.173v-.224c0-.131.067-.248.172-.311a54.615 54.615 0 0 1 4.653-2.52.75.75 0 0 0-.65-1.352 56.123 56.123 0 0 0-4.78 2.589 1.858 1.858 0 0 0-.859 1.228 49.803 49.803 0 0 0-4.634-1.527.75.75 0 0 1-.231-1.337A60.653 60.653 0 0 1 11.7 2.805Z" />
                             <path d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.87 47.87 0 0 0-8.105 4.342.75.75 0 0 1-.832 0 47.87 47.87 0 0 0-8.104-4.342.75.75 0 0 1-.461-.71c.035-1.442.121-2.87.255-4.286.921.304 1.83.634 2.726.99v1.27a1.5 1.5 0 0 0-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.66a6.727 6.727 0 0 0 .551-1.607 1.5 1.5 0 0 0 .14-2.67v-.645a48.549 48.549 0 0 1 3.44 1.667 2.25 2.25 0 0 0 2.12 0Z" />
@@ -58,11 +58,11 @@ export default function Sidebar({ user }) {
                         </svg>
                         <span className={`text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray group-hover:text-light-gray dark:group-hover:text-light-gray group-hover:text-primary-purple ${ currentPage === '/courses' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>Courses</span>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 lg:dark:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 lg:dark:text-white lg:block hidden">
                         <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
                     </svg>
                 </Link>
-                <ul id="course-dropdown" className={`lg:px-2 lg:w-full ${isOpen ? 'block' : 'hidden'}`}>
+                <ul id="course-dropdown" className={`lg:px-2 lg:w-full lg:block hidden ${isOpen ? 'block' : 'hidden'}`}>
                     <li>
                         <Link href="/sets" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-accent-pink lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-between lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group pl-6 ${ currentPage === '/sets' ? 'active lg:[&.active]:bg-muted-pink lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
                         <div className="lg:flex lg:items-center">

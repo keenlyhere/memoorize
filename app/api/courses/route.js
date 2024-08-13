@@ -1,7 +1,38 @@
 import { db } from "@/firebase";
-import { addDoc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
+// get all courses
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+  }
+
+  try {
+    const coursesCollection = collection(db, 'Courses');
+    const coursesQuery = query(
+        coursesCollection,
+        where('userId', '==', userId),
+        orderBy('title', 'asc'),
+    );
+    const coursesSnapshot = await getDocs(coursesQuery);
+
+    const courses = coursesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json(courses, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// add course
 export async function POST(request) {
     try {
         const { title, userId } = await request.json();
@@ -21,9 +52,40 @@ export async function POST(request) {
             id: newCourseDocRef.id
         });
 
-        return NextResponse.json({ success: 'Course added' }, { status: 200 });
+        const newCourseRef = await getDoc(newCourseDocRef);
+        const newCourseData = newCourseRef.data();
+
+        return NextResponse.json(newCourseData, { status: 200 });
     } catch (error) {
         console.error('Error adding course:', error.message);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+// delete a course
+export async function DELETE(request) {
+    const { courseId, userId } = await request.json();
+
+    if (!courseId) {
+        console.log('courseId:', courseId);
+        return NextResponse.json({ error: 'Course ID is required' }, { status: 400 });
+    }
+
+    try {
+        const courseDocRef = doc(db, 'Courses', courseId);
+        const courseDoc = await getDoc(courseDocRef);
+        const courseData = courseDoc.data();
+        console.log('courseDocRef userId:', courseData.userId)
+
+        if (userId !== courseData.userId) {
+            return NextResponse.json({ error: 'You cannot delete a course that is not yours' }, { status: 400 });
+        }
+
+        await deleteDoc(courseDocRef);
+
+        return NextResponse.json({ message: 'Course deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('Error deleting course:', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
