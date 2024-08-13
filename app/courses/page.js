@@ -8,6 +8,7 @@ import AddCourseForm from "@/components/AddCourseForm";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getUserCourses, removeCourse } from "@/lib/features/courses/coursesSlice";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
+import Link from "next/link";
 
 export default function Courses() {
     const dispatch = useAppDispatch();
@@ -93,7 +94,10 @@ export default function Courses() {
               >
                 { courses && courses.length > 0 ? (
                   courses.map((course) => (
-                    <div key={course.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
+                    <Link
+                      // href={`/course/${course.id}`}
+                      href='#'
+                      key={course.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
                       {/* all course details */}
                       <div className="flex w-full items-center space-x-4 grow">
                         {/* course status */}
@@ -156,7 +160,7 @@ export default function Courses() {
                           </svg>
                         </button>
                       </div>
-                    </div>
+                    </Link>
                   ))
                 ) : (<p>You have no courses.</p>)}
               </div>

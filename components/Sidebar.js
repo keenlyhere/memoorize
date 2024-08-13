@@ -37,7 +37,7 @@ export default function Sidebar({ user }) {
             <h1 className="lg:block text-3xl font-bold hidden text-center">me<span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">moo</span>rize</h1>
             {/* main sidebar links */}
             <div className="lg:flex-col lg:justify-start lg:items-start lg:pt-5 h-full w-full font-medium flex justify-center items-center lg:gap-y-1.5">
-                <Link href="/dashboard" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/dashboard' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
+                <Link href="/dashboard" className={`transition ease-out delay-50 duration-300 lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/dashboard' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/dashboard' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
                         <path fillRule="evenodd" d="M1.5 7.125c0-1.036.84-1.875 1.875-1.875h6c1.036 0 1.875.84 1.875 1.875v3.75c0 1.036-.84 1.875-1.875 1.875h-6A1.875 1.875 0 0 1 1.5 10.875v-3.75Zm12 1.5c0-1.036.84-1.875 1.875-1.875h5.25c1.035 0 1.875.84 1.875 1.875v8.25c0 1.035-.84 1.875-1.875 1.875h-5.25a1.875 1.875 0 0 1-1.875-1.875v-8.25ZM3 16.125c0-1.036.84-1.875 1.875-1.875h5.25c1.036 0 1.875.84 1.875 1.875v2.25c0 1.035-.84 1.875-1.875 1.875h-5.25A1.875 1.875 0 0 1 3 18.375v-2.25Z" clipRule="evenodd" />
                     </svg>
@@ -58,11 +58,11 @@ export default function Sidebar({ user }) {
                         </svg>
                         <span className={`text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray group-hover:text-light-gray dark:group-hover:text-light-gray group-hover:text-primary-purple ${ currentPage === '/courses' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>Courses</span>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 lg:dark:text-white lg:block hidden">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 lg:dark:text-white lg:block hidden">
                         <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-                    </svg>
+                    </svg> */}
                 </Link>
-                <ul id="course-dropdown" className={`lg:px-2 lg:w-full lg:block hidden ${isOpen ? 'block' : 'hidden'}`}>
+                {/* <ul id="course-dropdown" className={`lg:px-2 lg:w-full lg:block hidden ${isOpen ? 'block' : 'hidden'}`}>
                     <li>
                         <Link href="/sets" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-accent-pink lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-between lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group pl-6 ${ currentPage === '/sets' ? 'active lg:[&.active]:bg-muted-pink lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
                         <div className="lg:flex lg:items-center">
@@ -75,7 +75,7 @@ export default function Sidebar({ user }) {
                         </div>
                         </Link>
                     </li>
-                </ul>
+                </ul> */}
                 <Link href="/recall" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/recall' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/recall' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
                         <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
