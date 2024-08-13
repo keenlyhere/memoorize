@@ -4,17 +4,20 @@ import { usePathname } from "next/navigation"
 import { SignOutButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { clearUser } from "@/lib/features/users/userSlice";
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
+    const dispatch = useAppDispatch();
     const currentPage = usePathname();
-    const user = useAppSelector((state) => state.user);
+    // const user = useAppSelector((state) => state.user);
     const [ isLoaded, setIsLoaded ] = useState(false);
     const [ isOpen, setIsOpen ] = useState(false);
 
     useEffect(() => {
         if (user) {
             setIsLoaded(true);
+            console.log('user:', user)
         }
     }, [user, setIsLoaded]);
 
@@ -22,7 +25,11 @@ export default function Sidebar() {
         if (currentPage === '/courses' || currentPage === '/sets') {
             setIsOpen(true);
         }
-    }, [currentPage])
+    }, [currentPage]);
+
+    const logout = () => {
+        dispatch(clearUser());
+    }
 
   return (
         <div className="lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:flex lg:flex-col lg:shadow-lg lg:space-y-4 lg:px-4 lg:py-6 lg:block lg:overflow-y-auto lg:border-0 fixed bottom-0 left-0 z-50 w-full h-20 bg-white border-t border-gray-200 dark:bg-dark-gray dark:border-gray-600">
@@ -85,7 +92,7 @@ export default function Sidebar() {
             {/* user info */}
             <div className="lg:flex w-full items-center gap-4 hidden">
                 <SignOutButton>
-                    <button className="w-full text-primary-purple py-2 px-4 border border-primary-purple bg-white/75 rounded-lg hover:text-muted-purple hover:border-muted-purple">Sign out</button>
+                    <button className="w-full text-primary-purple py-2 px-4 border border-primary-purple bg-white/75 rounded-lg hover:text-muted-purple hover:border-muted-purple" onClick={logout}>Sign out</button>
                 </SignOutButton>
             </div>
             <div className="lg:flex w-full items-center gap-4 hidden">
