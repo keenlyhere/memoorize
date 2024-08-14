@@ -1,15 +1,42 @@
 'use client'
 
-import { useAppSelector } from "@/lib/hooks";
+import { setUser } from "@/lib/features/users/userSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+	const dispatch = useAppDispatch();
+	const { user, isLoaded, isSignedIn } = useUser();
   const currUser = useAppSelector((state) => state.user);
-  const [ isLoaded, setIsLoaded ] = useState(false);
+	const [ isUserLoaded, setIsUserLoaded ] = useState(false);
 
-  useEffect(() => {
-    if (currUser && currUser.isAuthenticated) setIsLoaded(true);
-  }, [currUser, setIsLoaded]);
+	useEffect(() => {
+		if (isLoaded) {
+			if (user && isSignedIn) {
+				// dispatch user information to redux store
+				dispatch(
+					setUser({
+						id: user.id,
+						fullName: user.fullName,
+						firstName: user.firstName,
+						email: user.primaryEmailAddress?.emailAddress,
+						avatar: user.imageUrl,
+					})
+				);
+			} else {
+				// clear user information in Redux store if not signed in
+				dispatch(clearUser());
+			}
+		}
+	}, [isLoaded, user, isSignedIn, dispatch]);
+
+  	useEffect(() => {
+      if (currUser) {
+        setIsUserLoaded(true);
+      }
+    }, [currUser])
+
   return (
     <div className="bg-light-gray text-dark-gray font-sans">
       {/* Header */}
@@ -21,7 +48,7 @@ export default function Home() {
             <a href="#" className="hover:text-accent-pink">Pricing</a>
             <a href="#" className="hover:text-accent-pink">Contact</a>
 
-            {isLoaded ? (
+            {isLoaded && isUserLoaded ? (
               <a href="/dashboard" className="bg-gradient-to-r text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l">Dashboard</a>
             ) : (
               <>
