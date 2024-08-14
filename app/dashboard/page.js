@@ -12,6 +12,7 @@ export default function Dashboard() {
     const currUser = useAppSelector((state) => state.user);
     const { courses, status } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
+    let noCourses;
 
     useEffect(() => {
         if (currUser && status !== 'succeeded') {
@@ -20,11 +21,12 @@ export default function Dashboard() {
     }, [currUser, status, dispatch]);
 
     useEffect(() => {
-      if (courses && courses.length > 0) {
+      if (courses) {
         setIsLoaded(true);
         console.log('courses:', courses);
       }
-    }, [courses, setIsLoaded])
+    }, [courses, setIsLoaded]);
+
     return (
          <MainLayout>
             { isLoaded ? (

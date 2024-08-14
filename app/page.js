@@ -8,7 +8,7 @@ export default function Home() {
   const [ isLoaded, setIsLoaded ] = useState(false);
 
   useEffect(() => {
-    if (currUser) setIsLoaded(true);
+    if (currUser && currUser.isAuthenticated) setIsLoaded(true);
   }, [currUser, setIsLoaded]);
   return (
     <div className="bg-light-gray text-dark-gray font-sans">
@@ -69,7 +69,7 @@ export default function Home() {
             <div className="w-full md:w-1/3 px-4">
               <div className="p-8 bg-white rounded-lg shadow-lg">
                 <h4 className="text-2xl font-bold mb-4">Track Your Progress</h4>
-                <p>Monitor your learning journey and see how much you've improved over time with detailed analytics.</p>
+                <p>Monitor your learning journey and see how much you&apos;ve improved over time with detailed analytics.</p>
               </div>
             </div>
           </div>

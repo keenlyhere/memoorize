@@ -8,7 +8,7 @@ import { getUserCourses, removeCourse, updateCourse } from "@/lib/features/cours
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import Link from "next/link";
 
-export default function Courses() {
+export default function Sets() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
     const { courses, status, error } = useAppSelector((state) => state.courses);
@@ -109,7 +109,7 @@ export default function Courses() {
         { isLoaded ? (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">Courses</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-2">Course</h1>
               <button
                 onClick={() => openModal(
                     <AddCourseForm onClose={closeModal} userId={currUser.id} />
@@ -129,91 +129,81 @@ export default function Courses() {
                 { courses && courses.length > 0 ? (
                   courses.map((course) => (
                     <div
-                      key={course.id}
-                      className="w-full flex p-6 border-b hover:bg-accent-pink/10">
+                      // href={`/course/${course.id}`}
+                      key={course.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
                       {/* all course details */}
-                      <Link
-                        href={`/course/${course.id}`}
-                        className="flex w-full items-center space-x-4 grow"
-                        onClick={(e) => handleLinkClick(e, course.id)}
-                      >
-                        <div
-                          className="flex w-full items-center space-x-4 grow"
-                          key={`link-${course.id}`}
-                        >
-                          {/* course status */}
-                          <div className="text-gray-500 pr-2">
-                            {/* to-do: change color of check mark if user completed all sets */}
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                          </div>
+                      <div className="flex w-full items-center space-x-4 grow">
+                        {/* course status */}
+                        <div className="text-gray-500 pr-2">
+                          {/* to-do: change color of check mark if user completed all sets */}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="2"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                        </div>
 
-                          {/* individual course details */}
-                          <div className="flex flex-col w-full">
-                            <div className="flex flex-col grow">
-                              { editingCourseId === course.id ? (
-                                <input
-                                  type="text"
-                                  value={editedTitle}
-                                  onChange={handleTitleChange}
-                                  onBlur={() => handleTitleBlur(course.id, course.title)}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                      if (editedTitle !== course.title) {
-                                        handleTitleSubmit(course.id);
-                                      } else {
-                                        setEditingCourseId(null);
-                                      }
+                        {/* individual course details */}
+                        <div className="flex flex-col w-full">
+                          <div className="flex flex-col grow">
+                            { editingCourseId === course.id ? (
+                              <input
+                                type="text"
+                                value={editedTitle}
+                                onChange={handleTitleChange}
+                                onBlur={() => handleTitleBlur(course.id, course.title)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    if (editedTitle !== course.title) {
+                                      handleTitleSubmit(course.id);
+                                    } else {
+                                      setEditingCourseId(null);
                                     }
-                                  }}
-                                  className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple"
-                                  autoFocus
-                                />
-                              ) : (
-                                <span
-                                  className="text-lg font-semibold text-dark-gray"
-                                  // onClick={() => handleEditClick(course)}
-                                >
-                                  { course.title }
-                                </span>
-                              )}
-                              <span className="text-sm text-gray-500">
-                                # of sets studied of total sets
+                                  }
+                                }}
+                                className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple"
+                                autoFocus
+                              />
+                            ) : (
+                              <span
+                                className="text-lg font-semibold text-dark-gray"
+                              >
+                                { course.title }
                               </span>
+                            )}
+                            <span className="text-sm text-gray-500">
+                              # of sets studied of total sets
+                            </span>
 
-                              {/* progress */}
-                              <div className="w-3/4 bg-gray-200 rounded-full h-2.5 mt-3">
-                                <div
-                                  className="h-2.5 rounded-full"
-                                  // style={{
-                                  //   width: `${(course.cardsStudied / course.totalCards) * 100}%`,
-                                  //   backgroundColor: course.progressColor,
-                                  // }}
-                                ></div>
-                              </div>
+                            {/* progress */}
+                            <div className="w-3/4 bg-gray-200 rounded-full h-2.5 mt-3">
+                              <div
+                                className="h-2.5 rounded-full"
+                                // style={{
+                                //   width: `${(course.cardsStudied / course.totalCards) * 100}%`,
+                                //   backgroundColor: course.progressColor,
+                                // }}
+                              ></div>
                             </div>
                           </div>
                         </div>
-                      </Link>
+                      </div>
 
                       {/* action buttons */}
                       <div className="flex space-x-4">
                         {/* edit */}
                         <button
                           className="text-gray-500 hover:text-primary-purple"
-                          onClick={(e) => handleEditClick(course)}
+                          onClick={() => handleEditClick(course)}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
                             <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
