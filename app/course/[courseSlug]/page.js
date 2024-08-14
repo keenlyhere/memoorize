@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getUserCourses } from "@/lib/features/courses/coursesSlice";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import Link from "next/link";
-import { getCourseSets, removeFlashcardSet, updateFlashcardSet } from "@/lib/features/courses/flashcardSetsSlice";
+import { getCourseSets, removeFlashcardSet, updateFlashcardSet } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 
 export default function Sets({ params }) {
     const dispatch = useAppDispatch();
@@ -145,7 +145,7 @@ export default function Sets({ params }) {
                       key={set.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
                       {/* all flashcard set details */}
                       <Link
-                        href={`/set/${set.id}`}
+                        href={`/course/${courseId}/set/${set.id}`}
                         className="flex w-full items-center space-x-4 grow"
                       >
                         {/* flashcard set status */}

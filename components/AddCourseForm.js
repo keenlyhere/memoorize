@@ -1,6 +1,6 @@
 'use client'
 import { addCourse } from "@/lib/features/courses/coursesSlice";
-import { addFlashcardSet } from "@/lib/features/courses/flashcardSetsSlice";
+import { addFlashcardSet } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useState } from "react";
 
