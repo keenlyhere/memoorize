@@ -2,7 +2,7 @@ import { db } from "@/firebase";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
-// get all courses
+// GET all courses
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
@@ -32,7 +32,7 @@ export async function GET(request) {
   }
 }
 
-// add course
+// POST (add) a course
 export async function POST(request) {
     try {
         const { title, userId } = await request.json();
@@ -62,7 +62,7 @@ export async function POST(request) {
     }
 }
 
-// delete a course
+// DELETE a course
 export async function DELETE(request) {
     const { courseId, userId } = await request.json();
 
@@ -89,4 +89,30 @@ export async function DELETE(request) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+}
+
+// PUT (edit) a course
+export async function PUT(request) {
+  const { courseId, title } = await request.json();
+
+  if (!courseId || !title) {
+    return NextResponse.json({ error: 'Course ID and title are required' }, { status: 400 });
+  }
+
+  try {
+    const courseRef = doc(db, 'Courses', courseId);
+    await updateDoc(courseRef, {
+      title,
+      updatedAt: serverTimestamp(),
+    });
+
+    const updatedCourse = await getDoc(courseRef);
+    const updatedCourseData = updatedCourse.data();
+
+    console.log('updatedCourseData:', updatedCourseData);
+
+    return NextResponse.json(updatedCourseData, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
