@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { clearUser } from "@/lib/features/users/userSlice";
+import Image from "next/image";
 
 export default function Sidebar({ user }) {
     const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ export default function Sidebar({ user }) {
     const [ isOpen, setIsOpen ] = useState(false);
 
     useEffect(() => {
-        if (user) {
+        if (user && user.isAuthenticated) {
             setIsLoaded(true);
             console.log('user:', user)
         }
@@ -97,7 +98,7 @@ export default function Sidebar({ user }) {
             </div>
             <div className="lg:flex w-full items-center gap-4 hidden">
                 { isLoaded ? (
-                    <img src={user?.avatar} alt="User Avatar" className="w-10 h-10 rounded-full" />
+                    <Image src={user?.avatar} width={40} height={40} alt="User Avatar" className="w-10 h-10 rounded-full" />
                 ) : (
                     <div className="w-10 h-10 rounded-full bg-gray-300" />
                 )}

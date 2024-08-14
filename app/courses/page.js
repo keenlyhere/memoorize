@@ -27,7 +27,7 @@ export default function Courses() {
     }, [currUser, status, dispatch]);
 
     useEffect(() => {
-      if (currUser && courses && courses.length > 0) {
+      if (currUser && courses) {
         setIsLoaded(true);
         console.log('courses:', courses);
       }
@@ -233,7 +233,7 @@ export default function Courses() {
                       </div>
                     </div>
                   ))
-                ) : (<p>You have no courses.</p>)}
+                ) : (<p className="dark:text-dark-gray">You have no courses. Click the &apos;+ Course&apos; button on the top right to add a course!</p>)}
               </div>
             </div>
 
