@@ -75,10 +75,9 @@ export async function DELETE(request) {
         const courseDocRef = doc(db, 'Courses', courseId);
         const courseDoc = await getDoc(courseDocRef);
         const courseData = courseDoc.data();
-        console.log('courseDocRef userId:', courseData.userId)
 
         if (userId !== courseData.userId) {
-            return NextResponse.json({ error: 'You cannot delete a course that is not yours' }, { status: 400 });
+            return NextResponse.json({ error: 'You cannot delete a course that is not yours' }, { status: 403 });
         }
 
         await deleteDoc(courseDocRef);
@@ -109,10 +108,9 @@ export async function PUT(request) {
     const updatedCourse = await getDoc(courseRef);
     const updatedCourseData = updatedCourse.data();
 
-    console.log('updatedCourseData:', updatedCourseData);
-
     return NextResponse.json(updatedCourseData, { status: 200 });
   } catch (error) {
+    console.error('Error updating course:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -1,46 +1,61 @@
 'use client'
 import { addCourse } from "@/lib/features/courses/coursesSlice";
+import { addFlashcardSet } from "@/lib/features/courses/flashcardSetsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useState } from "react";
 
-export default function AddCourseForm({ onClose, userId }) {
+export default function AddCourseForm({ onClose, userId, type, courseId }) {
     const { status, error } = useAppSelector((state) => state.courses);
-    const [courseTitle, setCourseTitle] = useState('');
+    const [title, setTitle] = useState('');
     const [ errors, setErrors ] = useState(null);
     const dispatch = useAppDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!courseTitle) {
+        if (!title) {
             setErrors('Course title is required');
             return;
         }
 
-        const newCourse = {
-            title: courseTitle,
+        const newAdd = {
+            title,
             userId
         }
 
-        dispatch(addCourse(newCourse))
-            .unwrap()
-            .then(() => {
-                setCourseTitle('');
-                onClose();
-            })
-            .catch((err) => {
-                console.error('Failed to add course:', err);
-            })
+        if (type === 'Course') {
+            dispatch(addCourse(newAdd))
+                .unwrap()
+                .then(() => {
+                    setTitle('');
+                    onClose();
+                })
+                .catch((err) => {
+                    console.error('Failed to add course:', err);
+                })
+        }
+
+        if (type === 'Set') {
+            dispatch(addFlashcardSet({...newAdd, courseId}))
+                .unwrap()
+                .then(() => {
+                    setTitle('');
+                    onClose();
+                })
+                .catch((err) => {
+                    console.error('Failed to add flashcard set:', err);
+                })
+        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <h2 className="text-xl font-semibold mb-4 text-dark-gray">Add New Course</h2>
+            <h2 className="text-xl font-semibold mb-4 text-dark-gray">Add New { type }</h2>
             <div className="relative mb-4">
                 <input
                     type="text"
-                    value={courseTitle}
-                    onChange={(e) => setCourseTitle(e.target.value)}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     required
                     className="peer w-full p-3 h-12 border border-gray-300 rounded-md outline-none focus:border-primary-purple focus:ring-0 focus:outline-none transition-all bg-white text-dark-gray placeholder-transparent"
                     placeholder="Course Name"
@@ -50,7 +65,7 @@ export default function AddCourseForm({ onClose, userId }) {
                     htmlFor="courseTitle"
                     className="absolute left-3 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-primary-purple peer-focus:bg-white"
                 >
-                    Course Name
+                    { type } Name
                 </label>
             </div>
 
@@ -78,7 +93,7 @@ export default function AddCourseForm({ onClose, userId }) {
                             </svg>
                             Adding...
                         </div>
-                    ) : 'Add Course' }
+                    ) : `Add ${type}` }
                 </button>
             </div>
         </form>

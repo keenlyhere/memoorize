@@ -4,34 +4,47 @@ import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import AddCourseForm from "@/components/AddCourseForm";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { getUserCourses, removeCourse, updateCourse } from "@/lib/features/courses/coursesSlice";
+import { getUserCourses } from "@/lib/features/courses/coursesSlice";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import Link from "next/link";
+import { getCourseSets, removeFlashcardSet, updateFlashcardSet } from "@/lib/features/courses/flashcardSetsSlice";
 
-export default function Sets() {
+export default function Sets({ params }) {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses, status, error } = useAppSelector((state) => state.courses);
+    const courseId = params.courseSlug;
+    const { courses } = useAppSelector((state) => state.courses);
+    const { flashcardSets, status } = useAppSelector((state) => state.flashcardSets);
+    const [ currCourse, setCurrCourse ] = useState('');
     const [ isModalOpen, setIsModalOpen ] = useState(false);
     const [ modalContent, setModalContent ] = useState(null);
-    const [ selectedCourseId, setSelectedCourseId ] = useState(null);
+    const [ selectedFlashcardSetId, setSelectedFlashcardSetId ] = useState(null);
     const [ isLoaded, setIsLoaded ] = useState(false);
-    const [ editingCourseId, setEditingCourseId ] = useState(null);
+    const [ editingFlashcardSetId, setEditingFlashcardSetId ] = useState(null);
     const [ editedTitle, setEditedTitle ] = useState('');
 
     useEffect(() => {
-      console.log('status:', status)
-        if (currUser && status !== 'succeeded') {
+        if (currUser && currUser.id !== null && courseId) {
             dispatch(getUserCourses(currUser.id));
+        }
+    }, [currUser, courseId, dispatch]);
+
+    useEffect(() => {
+        if (currUser && status !== 'succeeded') {
+            const userId = currUser.id;
+            dispatch(getCourseSets({ courseId, userId }));
         }
     }, [currUser, status, dispatch]);
 
     useEffect(() => {
-      if (currUser && courses && courses.length > 0) {
+      console.log('flashcardSets:', flashcardSets);
+      if (currUser && courses && flashcardSets) {
+        const course = courses.find((course) => course.id === courseId);
+        setCurrCourse(course);
         setIsLoaded(true);
-        console.log('courses:', courses);
+        console.log('course:', course);
       }
-    }, [currUser, courses, setIsLoaded])
+    }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
 
     const openModal = (content) => {
       setModalContent(content);
@@ -43,25 +56,25 @@ export default function Sets() {
       setModalContent(null);
     };
 
-    const handleDeleteClick = (courseId) => {
-      setSelectedCourseId(courseId);
+    const handleDeleteClick = (flashcardSetId) => {
+      setSelectedFlashcardSetId(flashcardSetId);
       openModal(
         <DeleteConfirmation
-          onConfirm={() => handleDelete(courseId)}
+          onConfirm={() => handleDelete(flashcardSetId)}
           onClose={closeModal}
         />
       )
     };
 
-    const handleDelete = async (courseId) => {
+    const handleDelete = async (flashcardSetId) => {
       const userId = currUser.id;
-      const courseData = {
-        courseId,
+      const flashcardSetData = {
+        setId: flashcardSetId,
         userId
       }
-      console.log('deleting:', courseData)
+      console.log('deleting:', flashcardSetData)
 
-      dispatch(removeCourse(courseData))
+      dispatch(removeFlashcardSet(flashcardSetData))
         .unwrap()
         .then(() => {
           console.log('Course deleted successfully');
@@ -74,7 +87,7 @@ export default function Sets() {
 
     const handleEditClick = (course) => {
       console.log('in function handleEditClick');
-      setEditingCourseId(course.id);
+      setEditingFlashcardSetId(course.id);
       setEditedTitle(course.title);
     };
 
@@ -83,12 +96,12 @@ export default function Sets() {
       setEditedTitle(e.target.value);
     };
 
-    const handleTitleSubmit = (courseId) => {
+    const handleTitleSubmit = (flashcardSetId) => {
       console.log('in function handleTitleSubmit');
-      dispatch(updateCourse({ id: courseId, title: editedTitle }))
+      dispatch(updateFlashcardSet({ id: flashcardSetId, title: editedTitle, userId: currUser.id }))
         .unwrap()
         .then(() => {
-          setEditingCourseId(null);
+          setEditingFlashcardSetId(null);
         })
         .catch((error) => {
           console.error('Failed to update course:', error);
@@ -100,7 +113,7 @@ export default function Sets() {
       if (editedTitle !== originalTitle) {
         handleTitleSubmit(courseId);
       } else {
-        setEditingCourseId(null);
+        setEditingFlashcardSetId(null);
       }
     };
 
@@ -109,33 +122,35 @@ export default function Sets() {
         { isLoaded ? (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">Course</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
               <button
                 onClick={() => openModal(
-                    <AddCourseForm onClose={closeModal} userId={currUser.id} />
+                    <AddCourseForm onClose={closeModal} userId={currUser.id} type='Set' courseId={currCourse?.id} />
                 )}
                 className="bg-primary-purple text-white py-2 px-4 rounded-lg flex gap-2 items-center justify-center"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
                   <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
                 </svg>
-                Course
+                Set
               </button>
             </div>
             <div className="w-full">
               <div
                 className="flex flex-col w-full items-center justify-between py-4"
               >
-                { courses && courses.length > 0 ? (
-                  courses.map((course) => (
+                { flashcardSets && flashcardSets.length > 0 ? (
+                  flashcardSets.map((set) => (
                     <div
-                      // href={`/course/${course.id}`}
-                      key={course.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
-                      {/* all course details */}
-                      <div className="flex w-full items-center space-x-4 grow">
-                        {/* course status */}
+                      key={set.id} className="w-full flex p-6 border-b hover:bg-accent-pink/10">
+                      {/* all flashcard set details */}
+                      <Link
+                        href={`/set/${set.id}`}
+                        className="flex w-full items-center space-x-4 grow"
+                      >
+                        {/* flashcard set status */}
                         <div className="text-gray-500 pr-2">
-                          {/* to-do: change color of check mark if user completed all sets */}
+                          {/* to-do: change color of check mark if user completed all flashcards */}
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -155,18 +170,18 @@ export default function Sets() {
                         {/* individual course details */}
                         <div className="flex flex-col w-full">
                           <div className="flex flex-col grow">
-                            { editingCourseId === course.id ? (
+                            { editingFlashcardSetId === set.id ? (
                               <input
                                 type="text"
                                 value={editedTitle}
                                 onChange={handleTitleChange}
-                                onBlur={() => handleTitleBlur(course.id, course.title)}
+                                onBlur={() => handleTitleBlur(set.id, set.title)}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') {
-                                    if (editedTitle !== course.title) {
-                                      handleTitleSubmit(course.id);
+                                    if (editedTitle !== set.title) {
+                                      handleTitleSubmit(set.id);
                                     } else {
-                                      setEditingCourseId(null);
+                                      setEditingFlashcardSetId(null);
                                     }
                                   }
                                 }}
@@ -177,11 +192,11 @@ export default function Sets() {
                               <span
                                 className="text-lg font-semibold text-dark-gray"
                               >
-                                { course.title }
+                                { set.title }
                               </span>
                             )}
                             <span className="text-sm text-gray-500">
-                              # of sets studied of total sets
+                              # of flashcards studied of total flashcards
                             </span>
 
                             {/* progress */}
@@ -196,14 +211,14 @@ export default function Sets() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
 
                       {/* action buttons */}
                       <div className="flex space-x-4">
                         {/* edit */}
                         <button
                           className="text-gray-500 hover:text-primary-purple"
-                          onClick={() => handleEditClick(course)}
+                          onClick={() => handleEditClick(set)}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
                             <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
@@ -214,7 +229,7 @@ export default function Sets() {
                         {/* delete */}
                         <button
                           className="text-gray-500 hover:text-red-600"
-                          onClick={() => handleDeleteClick(course.id)}
+                          onClick={() => handleDeleteClick(set.id)}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                             <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -223,13 +238,12 @@ export default function Sets() {
                       </div>
                     </div>
                   ))
-                ) : (<p>You have no courses.</p>)}
+                ) : (<p className="dark:text-dark-gray">You have no flashcard sets. Click the &apos;+ Set&apos; button on the top right to add a flashcard set!</p>)}
               </div>
             </div>
 
             {/* modal */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-              {/* <AddCourseForm onClose={closeModal} userId={currUser.id} /> */}
               { modalContent }
             </Modal>
           </>

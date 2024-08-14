@@ -112,7 +112,7 @@ export default function Courses() {
               <h1 className="text-xl font-medium text-dark-gray py-2">Courses</h1>
               <button
                 onClick={() => openModal(
-                    <AddCourseForm onClose={closeModal} userId={currUser.id} />
+                    <AddCourseForm onClose={closeModal} userId={currUser.id} type='Course' />
                 )}
                 className="bg-primary-purple text-white py-2 px-4 rounded-lg flex gap-2 items-center justify-center"
               >
@@ -135,7 +135,6 @@ export default function Courses() {
                       <Link
                         href={`/course/${course.id}`}
                         className="flex w-full items-center space-x-4 grow"
-                        onClick={(e) => handleLinkClick(e, course.id)}
                       >
                         <div
                           className="flex w-full items-center space-x-4 grow"
@@ -239,7 +238,6 @@ export default function Courses() {
 
             {/* modal */}
             <Modal isOpen={isModalOpen} onClose={closeModal}>
-              {/* <AddCourseForm onClose={closeModal} userId={currUser.id} /> */}
               { modalContent }
             </Modal>
           </>
