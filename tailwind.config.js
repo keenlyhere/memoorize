@@ -19,7 +19,16 @@ module.exports = {
         'light-gray': '#f7f7f7',    // secondary text color (on dark backgrounds)
         'muted-purple': '#6a5da3',    // primary-dark
         'muted-pink': '#d8a2b8',    // accent-light
-      }
+      },
+      keyframes: {
+        skeletonWave: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+      animation: {
+        'skeleton-wave': 'skeletonWave 1.5s infinite linear',
+      },
     },
   },
   plugins: [],
