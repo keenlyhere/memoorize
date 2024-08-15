@@ -13,6 +13,7 @@ import {
 import { getCourseSets } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { getSingleCard } from "@/lib/features/flashcards/flashcardsSlice";
 import BackButton from "@/components/BackButton";
+import Flashcard from "@/components/Flashcard";
 
 const calculateNextReviewDate = (difficulty) => {
   const now = new Date();
@@ -211,97 +212,101 @@ export default function Set({ params }) {
               <div className="flex flex-col w-full items-center justify-between pb-4">
                 {flashcards && flashcards.length > 0 ? (
                   flashcards.map((flashcard) => (
-                    <div
-                      key={flashcard.id}
-                      className="w-full flex p-6 border-b hover:bg-accent-pink/10"
-                    >
-                      <div className="flex w-full items-center space-x-4 grow">
-                        <div className="flex flex-col w-full">
-                          <div className="flex flex-col grow">
-                            {editingFlashcardId === flashcard.id ? (
-                              <>
-                                <input
-                                  type="text"
-                                  value={editedQuestion}
-                                  onChange={(e) =>
-                                    handleFieldChange(e, "question")
-                                  }
-                                  onBlur={() =>
-                                    handleFieldBlur(
-                                      flashcard.id,
-                                      flashcard.question,
-                                      flashcard.answer
-                                    )
-                                  }
-                                  className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple"
-                                  autoFocus
-                                />
-                                <textarea
-                                  value={editedAnswer}
-                                  onChange={(e) =>
-                                    handleFieldChange(e, "answer")
-                                  }
-                                  onBlur={() =>
-                                    handleFieldBlur(
-                                      flashcard.id,
-                                      flashcard.question,
-                                      flashcard.answer
-                                    )
-                                  }
-                                  className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple mt-2"
-                                  rows="3"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <span
-                                  className="text-lg font-semibold text-dark-gray"
-                                  onClick={() => handleEditClick(flashcard)}
-                                >
-                                  {flashcard.question}
-                                </span>
-                                <p className="text-sm text-gray-500">
-                                  {flashcard.answer}
-                                </p>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex space-x-4">
-                        <button
-                          className="text-gray-500 hover:text-primary-purple"
-                          onClick={() => handleEditClick(flashcard)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="size-5"
-                          >
-                            <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
-                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
-                          </svg>
-                        </button>
-                        <button
-                          className="text-gray-500 hover:text-red-600"
-                          onClick={() => handleDeleteClick(flashcard.id)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                    <div key={flashcard.id} className="lg:px-6 w-full">
+                      <Flashcard question={flashcard.question} answer={flashcard.answer} />
                     </div>
+
+                    // <div
+                    //   key={flashcard.id}
+                    //   className="w-full flex p-6 border-b hover:bg-accent-pink/10"
+                    // >
+                    //   <div className="flex w-full items-center space-x-4 grow">
+                    //     <div className="flex flex-col w-full">
+                    //       <div className="flex flex-col grow">
+                    //         {editingFlashcardId === flashcard.id ? (
+                    //           <>
+                    //             <input
+                    //               type="text"
+                    //               value={editedQuestion}
+                    //               onChange={(e) =>
+                    //                 handleFieldChange(e, "question")
+                    //               }
+                    //               onBlur={() =>
+                    //                 handleFieldBlur(
+                    //                   flashcard.id,
+                    //                   flashcard.question,
+                    //                   flashcard.answer
+                    //                 )
+                    //               }
+                    //               className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple"
+                    //               autoFocus
+                    //             />
+                    //             <textarea
+                    //               value={editedAnswer}
+                    //               onChange={(e) =>
+                    //                 handleFieldChange(e, "answer")
+                    //               }
+                    //               onBlur={() =>
+                    //                 handleFieldBlur(
+                    //                   flashcard.id,
+                    //                   flashcard.question,
+                    //                   flashcard.answer
+                    //                 )
+                    //               }
+                    //               className="text-lg w-3/4 font-semibold text-dark-gray bg-light-gray p-1 rounded focus:outline-none focus:border-primary-purple focus:ring-1 focus:ring-primary-purple mt-2"
+                    //               rows="3"
+                    //             />
+                    //           </>
+                    //         ) : (
+                    //           <>
+                    //             <span
+                    //               className="text-lg font-semibold text-dark-gray"
+                    //               onClick={() => handleEditClick(flashcard)}
+                    //             >
+                    //               {flashcard.question}
+                    //             </span>
+                    //             <p className="text-sm text-gray-500">
+                    //               {flashcard.answer}
+                    //             </p>
+                    //           </>
+                    //         )}
+                    //       </div>
+                    //     </div>
+                    //   </div>
+                    //   <div className="flex space-x-4">
+                    //     <button
+                    //       className="text-gray-500 hover:text-primary-purple"
+                    //       onClick={() => handleEditClick(flashcard)}
+                    //     >
+                    //       <svg
+                    //         xmlns="http://www.w3.org/2000/svg"
+                    //         viewBox="0 0 20 20"
+                    //         fill="currentColor"
+                    //         className="size-5"
+                    //       >
+                    //         <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
+                    //         <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
+                    //       </svg>
+                    //     </button>
+                    //     <button
+                    //       className="text-gray-500 hover:text-red-600"
+                    //       onClick={() => handleDeleteClick(flashcard.id)}
+                    //     >
+                    //       <svg
+                    //         xmlns="http://www.w3.org/2000/svg"
+                    //         viewBox="0 0 24 24"
+                    //         fill="currentColor"
+                    //         className="size-6"
+                    //       >
+                    //         <path
+                    //           fillRule="evenodd"
+                    //           d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    //           clipRule="evenodd"
+                    //         />
+                    //       </svg>
+                    //     </button>
+                    //   </div>
+                    // </div>
                   ))
                 ) : (
                   <p className="dark:text-dark-gray">

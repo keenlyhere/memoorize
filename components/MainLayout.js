@@ -41,7 +41,7 @@ export default function MainLayout({ children }) {
 	return (
 		<>
 			<Sidebar user={currUser} />
-			<main className="bg-light-gray lg:pl-72 lg:py-6 lg:pr-6 h-screen p-6 overflow-auto">
+			<main className="bg-light-gray lg:pl-72 lg:py-6 lg:pr-6 h-screen lg:pb-0 p-6 overflow-auto pb-16">
 				{ children }
 			</main>
 		</>
