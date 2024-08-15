@@ -41,33 +41,13 @@ export default function Sets({ params }) {
 
   useEffect(() => {
     if (currCourse && currCourse.id === courseId) {
-      dispatch(getCourseSets({ courseId: currCourse.id, userId: currUser.id }));
-      setIsLoaded(true);
+      dispatch(getCourseSets({ courseId: currCourse.id, userId: currUser.id }))
+      .unwrap()
+      .then(() => {
+          setIsLoaded(true);
+      });
     }
   }, [currCourse, courseId, dispatch]);
-
-    // useEffect(() => {
-    //     if (currUser && currUser.id !== null && courseId) {
-    //         dispatch(getUserCourses(currUser.id));
-    //     }
-    // }, [currUser, courseId, dispatch]);
-
-    // useEffect(() => {
-    //     if (currUser && courseId && status !== 'succeeded') {
-    //         const userId = currUser.id;
-    //         dispatch(getCourseSets({ courseId, userId }));
-    //     }
-
-    //     setIsLoaded(true);
-    // }, [currUser, courseId, status, dispatch]);
-
-    // useEffect(() => {
-    //   if (currUser && courses) {
-    //     const course = courses.find((course) => course.id === courseId);
-    //     setCurrCourse(course);
-    //     console.log('course:', course);
-    //   }
-    // }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
 
   const openModal = (content) => {
     setModalContent(content);
@@ -151,7 +131,7 @@ export default function Sets({ params }) {
       {isLoaded ? (
         <>
           <div className="flex justify-between items-center mb-6">
-            {/* <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title } {flashcardSets}</h1> */}
+            <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
             <button
               onClick={() =>
                 openModal(
