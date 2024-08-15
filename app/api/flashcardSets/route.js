@@ -13,6 +13,11 @@ export async function GET(request) {
 	}
 
 	try {
+		// get course title
+		const coursesCollection = doc(db, 'Courses', courseId);
+		const coursesSnapshot = await getDoc(coursesCollection);
+		const coursesData = coursesSnapshot.data();
+
 		const setsCollection = collection(db, "FlashcardSets");
 		const setsQuery = query(
 			setsCollection,
@@ -24,6 +29,7 @@ export async function GET(request) {
 
 		const sets = setsSnapshot.docs.map((doc) => ({
 			id: doc.id,
+			courseTitle: coursesData.title,
 			...doc.data(),
 		}));
 

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import AddCourseForm from "@/components/AddCourseForm";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { getUserCourses } from "@/lib/features/courses/coursesSlice";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import Link from "next/link";
 import { getCourseSets, removeFlashcardSet, updateFlashcardSet } from "@/lib/features/flashcardSets/flashcardSetsSlice";
@@ -22,6 +21,7 @@ export default function Sets({ params }) {
     const [ isLoaded, setIsLoaded ] = useState(false);
     const [ editingFlashcardSetId, setEditingFlashcardSetId ] = useState(null);
     const [ editedTitle, setEditedTitle ] = useState('');
+    let courseTitle = '';
 
     // fetch user courses
     // useEffect(() => {
@@ -31,13 +31,18 @@ export default function Sets({ params }) {
     // }, [currUser, courseId, dispatch]);
 
     useEffect(() => {
+        courseTitle = getCourseTitle();
+
         if (currUser && courseId) {
             const userId = currUser.id;
             dispatch(getCourseSets({ courseId, userId }));
         }
 
-        setIsLoaded(true);
-    }, [currUser, courseId, dispatch]);
+        // if (courseTitle.length) {
+          setIsLoaded(true);
+        // }
+
+    }, [currUser, courseTitle, courseId, dispatch]);
 
     // useEffect(() => {
     //   if (currUser && courses) {
@@ -123,10 +128,10 @@ export default function Sets({ params }) {
         { isLoaded ? (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-2">{ courseTitle ? courseTitle : 'Sets' }</h1>
               <button
                 onClick={() => openModal(
-                    <AddCourseForm onClose={closeModal} userId={currUser.id} type='Set' courseId={currCourse?.id} />
+                    <AddCourseForm onClose={closeModal} userId={currUser.id} type='Set' courseId={courseId} />
                 )}
                 className="bg-primary-purple text-white py-2 px-4 rounded-lg flex gap-2 items-center justify-center"
               >
