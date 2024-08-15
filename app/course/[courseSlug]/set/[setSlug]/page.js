@@ -70,7 +70,7 @@ export default function Set({ params }) {
 			setIsLoaded(true);
 		});
     }
-  }, [currUser, setId, dispatch]);
+  }, [currUser, setId, setIsLoaded, dispatch]);
 
   const openModal = (content) => {
     setModalContent(content);

@@ -17,22 +17,19 @@ import {
 } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 
 export default function Sets({ params }) {
-  const dispatch = useAppDispatch();
-  const currUser = useAppSelector((state) => state.user);
-  const courseId = params.courseSlug;
-  const { courses } = useAppSelector((state) => state.courses);
-  const { flashcardSets, status } = useAppSelector(
-    (state) => state.flashcardSets
-  );
-  // const [ currCourse, setCurrCourse ] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-  const [selectedFlashcardSetId, setSelectedFlashcardSetId] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [editingFlashcardSetId, setEditingFlashcardSetId] = useState(null);
-  const [editedTitle, setEditedTitle] = useState("");
+    const dispatch = useAppDispatch();
+    const currUser = useAppSelector((state) => state.user);
+    const courseId = params.courseSlug;
+    const { courses } = useAppSelector((state) => state.courses);
+    const { flashcardSets, courseTitle, status } = useAppSelector((state) => state.flashcardSets);
+    const currCourse = useAppSelector((state) => state.courses.currCourse);
+    const [ isModalOpen, setIsModalOpen ] = useState(false);
+    const [ modalContent, setModalContent ] = useState(null);
+    const [ selectedFlashcardSetId, setSelectedFlashcardSetId ] = useState(null);
+    const [ isLoaded, setIsLoaded ] = useState(false);
+    const [ editingFlashcardSetId, setEditingFlashcardSetId ] = useState(null);
+    const [ editedTitle, setEditedTitle ] = useState('');
 
-  const currCourse = useAppSelector((state) => state.courses.currCourse);
   useEffect(() => {
     if (currUser && currUser.isAuthenticated && courseId) {
       dispatch(getSingleCourse(courseId));

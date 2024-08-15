@@ -27,6 +27,7 @@ export async function GET(request) {
 
         const flashcards = flashcardsSnapshot.docs.map(doc => ({
             id: doc.id,
+            setTitle: flashcardSetData.setTitle,
             ...doc.data(),
         }));
 
