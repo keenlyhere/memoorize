@@ -23,28 +23,29 @@ export default function Sets({ params }) {
     const [ editingFlashcardSetId, setEditingFlashcardSetId ] = useState(null);
     const [ editedTitle, setEditedTitle ] = useState('');
 
-    useEffect(() => {
-        if (currUser && currUser.id !== null && courseId) {
-            dispatch(getUserCourses(currUser.id));
-        }
-    }, [currUser, courseId, dispatch]);
+    // fetch user courses
+    // useEffect(() => {
+    //     if (currUser && currUser.id !== null && courseId) {
+    //         dispatch(getUserCourses(currUser.id));
+    //     }
+    // }, [currUser, courseId, dispatch]);
 
     useEffect(() => {
-        if (currUser && courseId && status !== 'succeeded') {
+        if (currUser && courseId) {
             const userId = currUser.id;
             dispatch(getCourseSets({ courseId, userId }));
         }
 
         setIsLoaded(true);
-    }, [currUser, courseId, status, dispatch]);
+    }, [currUser, courseId, dispatch]);
 
-    useEffect(() => {
-      if (currUser && courses) {
-        const course = courses.find((course) => course.id === courseId);
-        setCurrCourse(course);
-        console.log('course:', course);
-      }
-    }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
+    // useEffect(() => {
+    //   if (currUser && courses) {
+    //     const course = courses.find((course) => course.id === courseId);
+    //     setCurrCourse(course);
+    //     console.log('course:', course);
+    //   }
+    // }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
 
     const openModal = (content) => {
       setModalContent(content);
@@ -122,7 +123,7 @@ export default function Sets({ params }) {
         { isLoaded ? (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title } {flashcardSets}</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
               <button
                 onClick={() => openModal(
                     <AddCourseForm onClose={closeModal} userId={currUser.id} type='Set' courseId={currCourse?.id} />

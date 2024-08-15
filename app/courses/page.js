@@ -20,11 +20,10 @@ export default function Courses() {
     const [ editedTitle, setEditedTitle ] = useState('');
 
     useEffect(() => {
-      console.log('status:', status)
-        if (currUser && status !== 'succeeded') {
+        if (currUser && currUser.id !== null) {
             dispatch(getUserCourses(currUser.id));
         }
-    }, [currUser, status, dispatch]);
+    }, [currUser, dispatch]);
 
     useEffect(() => {
       if (currUser && courses) {

@@ -15,7 +15,7 @@ export default function Dashboard() {
     let noCourses;
 
     useEffect(() => {
-        if (currUser && status !== 'succeeded') {
+        if (currUser && currUser.id !== 'null') {
             dispatch(getUserCourses(currUser.id));
         }
     }, [currUser, status, dispatch]);
