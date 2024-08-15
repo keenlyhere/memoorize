@@ -34,27 +34,21 @@ export default function Sets({ params }) {
 
   const currCourse = useAppSelector((state) => state.courses.currCourse);
   useEffect(() => {
-    if (currUser && currUser.id !== null && courseId) {
+    if (currUser && currUser.isAuthenticated && courseId) {
       dispatch(getSingleCourse(courseId));
     }
   }, [currUser, courseId, dispatch]);
 
     useEffect(() => {
-        if (currUser && courseId) {
+        if (currUser && currUser.isAuthenticated && courseId) {
             const userId = currUser.id;
-            dispatch(getCourseSets({ courseId, userId }));
+            dispatch(getCourseSets({ courseId, userId }))
+            .unwrap()
+            .then(() => {
+                setIsLoaded(true);
+            });
         }
-
-        setIsLoaded(true);
     }, [currUser, courseId, dispatch]);
-
-    // useEffect(() => {
-    //   if (currUser && courses) {
-    //     const course = courses.find((course) => course.id === courseId);
-    //     setCurrCourse(course);
-    //     console.log('course:', course);
-    //   }
-    // }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
 
   const openModal = (content) => {
     setModalContent(content);

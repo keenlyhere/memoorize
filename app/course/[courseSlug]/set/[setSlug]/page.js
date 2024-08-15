@@ -38,7 +38,7 @@ export default function Set({ params }) {
   const currUser = useAppSelector((state) => state.user);
   const courseId = params.courseSlug;
   const setId = params.setSlug;
-  const { flashcards, status } = useAppSelector((state) => state.flashcards);
+  const { flashcards, flashcardSetTitle, status } = useAppSelector((state) => state.flashcards);
   const { flashcardSets } = useAppSelector((state) => state.flashcardSets);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -47,7 +47,6 @@ export default function Set({ params }) {
   const [editedQuestion, setEditedQuestion] = useState("");
   const [editedAnswer, setEditedAnswer] = useState("");
   const [viewMode, setViewMode] = useState("all"); // 'all' or 'study'
-  const [setTitle, setSetTitle] = useState("");
 
   //test for get single card
 //   const flashcardId = "4kCgskZQshf65xo2Rh8x";
@@ -62,51 +61,16 @@ export default function Set({ params }) {
 //     console.log("singleCard:", singleCard);
 // }, [singleCard]);
 
-  // get all flashcard sets from course
-  useEffect(() => {
-    if (currUser && currUser.id) {
-      const currUserId = currUser.id;
-      dispatch(getCourseSets({ courseId, userId: currUserId }));
-    }
-  }, [currUser, dispatch]);
-
   // fetch flashcards from this set
   useEffect(() => {
-    if (currUser && currUser.id !== null) {
-      dispatch(getFlashcards({ setId, userId: currUser.id }));
+    if (currUser && currUser.isAuthenticated && setId) {
+      dispatch(getFlashcards({ setId, userId: currUser.id }))
+	  	.unwrap()
+		.then(() => {
+			setIsLoaded(true);
+		});
     }
   }, [currUser, setId, dispatch]);
-
-  // update when flashcards are loaded
-  useEffect(() => {
-    if (flashcards && setTitle.length) {
-      setIsLoaded(true);
-    }
-  }, [flashcards, setTitle]);
-
-  // set flashcard set title
-  useEffect(() => {
-    if (flashcardSets && flashcardSets.length) {
-      const set = flashcardSets.find((set) => set.id === setId);
-      if (set) {
-        setSetTitle(set.title);
-      }
-    }
-  }, [flashcardSets, setId, setSetTitle]);
-
-  useEffect(() => {
-    console.log("setId:", setId);
-
-    console.log("flashcardSets:", flashcardSets);
-    if (flashcardSets) {
-      const set = flashcardSets.find((set) => set.id === setId);
-      if (set) {
-        setSetTitle(set.title);
-      } else {
-        console.log("Set not found");
-      }
-    }
-  }, [flashcardSets, setId, setSetTitle]);
 
   const openModal = (content) => {
     setModalContent(content);
@@ -213,7 +177,7 @@ export default function Set({ params }) {
         <>
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-xl font-medium text-dark-gray py-2">
-              {setTitle}
+              { flashcardSetTitle }
             </h1>
             <button
               onClick={() =>

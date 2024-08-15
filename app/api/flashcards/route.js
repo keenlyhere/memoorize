@@ -13,6 +13,10 @@ export async function GET(request) {
     }
 
     try {
+        const flashcardSetRef = doc(db, 'FlashcardSets', setId);
+        const flashcardSetDoc = await getDoc(flashcardSetRef);
+        const flashcardSetData = flashcardSetDoc.data();
+
         const flashcardsCollection = collection(db, 'Flashcards');
         const flashcardsQuery = query(
             flashcardsCollection,
@@ -26,7 +30,12 @@ export async function GET(request) {
             ...doc.data(),
         }));
 
-        return NextResponse.json(flashcards, { status: 200 });
+        const data = {
+            flashcards,
+            setTitle: flashcardSetData.title,
+        }
+
+        return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error('Error fetching flashcards:', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });

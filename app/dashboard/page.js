@@ -12,20 +12,16 @@ export default function Dashboard() {
     const currUser = useAppSelector((state) => state.user);
     const { courses } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
-    let noCourses;
 
     useEffect(() => {
-        if (currUser && currUser.id !== 'null') {
-            dispatch(getUserCourses(currUser.id));
+        if (currUser && currUser.isAuthenticated) {
+            dispatch(getUserCourses(currUser.id))
+            .unwrap()
+            .then(() => {
+                setIsLoaded(true);
+            });
         }
     }, [currUser, dispatch]);
-
-    useEffect(() => {
-      if (courses) {
-        setIsLoaded(true);
-        console.log('courses:', courses);
-      }
-    }, [courses, setIsLoaded]);
 
     return (
          <MainLayout>
