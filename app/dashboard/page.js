@@ -10,15 +10,15 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses, status } = useAppSelector((state) => state.courses);
+    const { courses } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
     let noCourses;
 
     useEffect(() => {
-        if (currUser && status !== 'succeeded') {
+        if (currUser && currUser.id !== 'null') {
             dispatch(getUserCourses(currUser.id));
         }
-    }, [currUser, status, dispatch]);
+    }, [currUser, dispatch]);
 
     useEffect(() => {
       if (courses) {

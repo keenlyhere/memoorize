@@ -32,7 +32,7 @@ export default function Home() {
 	}, [isLoaded, user, isSignedIn, dispatch]);
 
   	useEffect(() => {
-      if (currUser) {
+      if (currUser && currUser.id !== null) {
         setIsUserLoaded(true);
       }
     }, [currUser])
