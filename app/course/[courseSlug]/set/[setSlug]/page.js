@@ -110,41 +110,31 @@ export default function Set({ params }) {
     setEditedAnswer(flashcard.answer);
   };
 
-  const handleFieldChange = (e, field) => {
-    if (field === "question") {
-      setEditedQuestion(e.target.value);
-    } else if (field === "answer") {
-      setEditedAnswer(e.target.value);
+  const handleSaveClick = (flashcardId, originalQuestion, originalAnswer) => {
+    // don't dispatch update if no changes are made
+    if (editedQuestion !== originalQuestion || editedAnswer !== originalAnswer) {
+      dispatch(
+        updateFlashcard({
+          id: flashcardId,
+          question: editedQuestion,
+          answer: editedAnswer,
+          userId: currUser.id,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          setEditingFlashcardId(null);
+        })
+        .catch((error) => {
+          console.error("Failed to update flashcard:", error);
+        });
     }
+
+    setEditingFlashcardId(null);
   };
 
-  const handleFieldSubmit = (flashcardId) => {
-    dispatch(
-      updateFlashcard({
-        id: flashcardId,
-        question: editedQuestion,
-        answer: editedAnswer,
-        userId: currUser.id,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        setEditingFlashcardId(null);
-      })
-      .catch((error) => {
-        console.error("Failed to update flashcard:", error);
-      });
-  };
-
-  const handleFieldBlur = (flashcardId, originalQuestion, originalAnswer) => {
-    if (
-      editedQuestion !== originalQuestion ||
-      editedAnswer !== originalAnswer
-    ) {
-      handleFieldSubmit(flashcardId);
-    } else {
-      setEditingFlashcardId(null);
-    }
+  const handleCancelClick = () => {
+    setEditingFlashcardId(null);
   };
 
   const handleViewModeChange = (mode) => {
@@ -213,7 +203,19 @@ export default function Set({ params }) {
                 {flashcards && flashcards.length > 0 ? (
                   flashcards.map((flashcard) => (
                     <div key={flashcard.id} className="lg:px-6 w-full">
-                      <Flashcard question={flashcard.question} answer={flashcard.answer} />
+                      <Flashcard
+                        question={flashcard.question}
+                        answer={flashcard.answer}
+                        isEditing={editingFlashcardId === flashcard.id}
+                        editedQuestion={editedQuestion}
+                        editedAnswer={editedAnswer}
+                        onQuestionChange={setEditedQuestion}
+                        onAnswerChange={setEditedAnswer}
+                        onEditClick={() => handleEditClick(flashcard)}
+                        onDeleteClick={() => handleDeleteClick(flashcard.id)}
+                        onSaveClick={() => handleSaveClick(flashcard.id, flashcard.question, flashcard.answer)}
+                        onCancelClick={handleCancelClick}
+                      />
                     </div>
 
                     // <div
