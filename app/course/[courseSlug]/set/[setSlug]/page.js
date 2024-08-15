@@ -77,12 +77,11 @@ export default function Set({ params }) {
 	}, [flashcardSets, setId, setSetTitle]);
 
   useEffect(() => {
-    console.log("setId:", setId);
-
       console.log("flashcardSets:", flashcardSets);
     if (flashcardSets) {
       const set = flashcardSets.find((set) => set.id === setId);
       if (set) {
+		console.log('set:', set)
         setSetTitle(set.title);
       } else {
         console.log("Set not found");
