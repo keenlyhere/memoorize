@@ -39,15 +39,22 @@ export default function Sets({ params }) {
     }
   }, [currUser, courseId, dispatch]);
 
-  useEffect(() => {
-    if (currCourse && currCourse.id === courseId) {
-      dispatch(getCourseSets({ courseId: currCourse.id, userId: currUser.id }))
-      .unwrap()
-      .then(() => {
-          setIsLoaded(true);
-      });
-    }
-  }, [currCourse, courseId, dispatch]);
+    useEffect(() => {
+        if (currUser && courseId) {
+            const userId = currUser.id;
+            dispatch(getCourseSets({ courseId, userId }));
+        }
+
+        setIsLoaded(true);
+    }, [currUser, courseId, dispatch]);
+
+    // useEffect(() => {
+    //   if (currUser && courses) {
+    //     const course = courses.find((course) => course.id === courseId);
+    //     setCurrCourse(course);
+    //     console.log('course:', course);
+    //   }
+    // }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
 
   const openModal = (content) => {
     setModalContent(content);

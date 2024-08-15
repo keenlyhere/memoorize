@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function Courses() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses, status, error } = useAppSelector((state) => state.courses);
+    const { courses } = useAppSelector((state) => state.courses);
     const [ isModalOpen, setIsModalOpen ] = useState(false);
     const [ modalContent, setModalContent ] = useState(null);
     const [ selectedCourseId, setSelectedCourseId ] = useState(null);
@@ -20,11 +20,10 @@ export default function Courses() {
     const [ editedTitle, setEditedTitle ] = useState('');
 
     useEffect(() => {
-      console.log('status:', status)
-        if (currUser && status !== 'succeeded') {
+        if (currUser && currUser.id !== null) {
             dispatch(getUserCourses(currUser.id));
         }
-    }, [currUser, status, dispatch]);
+    }, [currUser, dispatch]);
 
     useEffect(() => {
       if (currUser && courses) {
