@@ -5,12 +5,17 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import getStripe from "@/utils/get-stripe";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "@/firebase";
+import {  useRouter } from "next/navigation";
 
 export default function Home() {
   const dispatch = useAppDispatch();
   const { user, isLoaded, isSignedIn } = useUser();
   const currUser = useAppSelector((state) => state.user);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (isLoaded) {
@@ -37,6 +42,22 @@ export default function Home() {
       setIsUserLoaded(true);
     }
   }, [currUser]);
+
+  //fetch plans to get id
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const querySnapshot = await getDocs(collection(db, "SubscriptionPlans"));
+      const plansArray = [];
+      querySnapshot.forEach((doc) => {
+        plansArray.push({ id: doc.id, ...doc.data() });
+      });
+      setPlans(plansArray);
+
+    };
+
+    fetchPlans();
+  }, []);
+
 
   //pricing object for dynamic rendering
   const pricingPlans = [
@@ -78,7 +99,22 @@ export default function Home() {
     },
   ];
 
-  const handleSubmit = async (plan) => {
+  const handleSubmit = async (selectedPlan) => {
+    //redirect to sign up if plan is free
+    if (selectedPlan.name === "Free") {
+      router.push("/sign-up");
+      return;
+    }
+
+    //find the selected plan id based on name
+    const plan = plans.find((p) => p.name.toLowerCase() === selectedPlan.name.toLowerCase());
+    console.log('plan', plan)
+
+    if (!plan) {
+      console.error("Selected plan not found");
+      return;
+    }
+
     const checkoutSession = await fetch("/api/checkout_session", {
       method: "POST",
       headers: {
@@ -88,6 +124,7 @@ export default function Home() {
         planName: plan.name,
         planPrice: plan.price,
         planFeatures: plan.features,
+        planId: plan.id
       }),
     });
 
@@ -230,23 +267,23 @@ export default function Home() {
   <div className="container mx-auto px-4 text-center">
     <h3 className="text-4xl font-bold mb-8">Affordable Pricing Plans</h3>
     <div className="flex flex-wrap -mx-4">
-      {pricingPlans.map((plan) => (
-        <div key={plan.name} className="w-full md:w-1/3 px-4 mb-8">
+      {pricingPlans.map((singlePlan) => (
+        <div key={singlePlan.name} className="w-full md:w-1/3 px-4 mb-8">
           <div className="p-8 bg-white rounded-lg shadow-sm text-dark-gray">
-            <h4 className="text-2xl font-bold mb-4">{plan.name}</h4>
-            <p className="text-xl">{plan.price}</p>
+            <h4 className="text-2xl font-bold mb-4">{singlePlan.name}</h4>
+            <p className="text-xl">{singlePlan.price}</p>
             <ul className="mt-4 text-left">
-              {plan.features.map((feature, index) => (
+              {singlePlan.features.map((feature, index) => (
                 <li key={index} className="mb-2">
                   <span className="text-primary-purple font-semibold">{feature.amount}</span> {feature.feature}
                 </li>
               ))}
             </ul>
             <button
-              onClick={() => handleSubmit(plan)}
+              onClick={() => handleSubmit(singlePlan)}
               className="bg-gradient-to-r from-primary-purple to-accent-pink text-white py-2 px-4 rounded-lg hover:bg-gradient-to-l mt-6 inline-block"
             >
-              {plan.buttonText}
+              {singlePlan.buttonText}
             </button>
           </div>
         </div>
