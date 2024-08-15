@@ -1,6 +1,6 @@
 'use client'
 
-import { setUser } from "@/lib/features/users/userSlice";
+import { clearUser, setUser } from "@/lib/features/users/userSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";

@@ -30,18 +30,18 @@ export default function Sets({ params }) {
     }, [currUser, courseId, dispatch]);
 
     useEffect(() => {
-        if (currUser && status !== 'succeeded') {
+        if (currUser && courseId && status !== 'succeeded') {
             const userId = currUser.id;
             dispatch(getCourseSets({ courseId, userId }));
         }
-    }, [currUser, status, dispatch]);
+
+        setIsLoaded(true);
+    }, [currUser, courseId, status, dispatch]);
 
     useEffect(() => {
-      console.log('flashcardSets:', flashcardSets);
-      if (currUser && courses && flashcardSets) {
+      if (currUser && courses) {
         const course = courses.find((course) => course.id === courseId);
         setCurrCourse(course);
-        setIsLoaded(true);
         console.log('course:', course);
       }
     }, [currUser, courses, setIsLoaded, setCurrCourse, flashcardSets]);
@@ -122,7 +122,7 @@ export default function Sets({ params }) {
         { isLoaded ? (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title } {flashcardSets}</h1>
               <button
                 onClick={() => openModal(
                     <AddCourseForm onClose={closeModal} userId={currUser.id} type='Set' courseId={currCourse?.id} />
