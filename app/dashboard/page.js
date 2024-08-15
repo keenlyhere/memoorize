@@ -12,7 +12,6 @@ export default function Dashboard() {
     const currUser = useAppSelector((state) => state.user);
     const { courses } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
-    let noCourses;
 
     useEffect(() => {
         if (currUser && currUser.isAuthenticated) {
@@ -22,19 +21,13 @@ export default function Dashboard() {
                 setIsLoaded(true);
             });
         }
-    }, [currUser, setIsLoaded, dispatch]);
-
-    // useEffect(() => {
-    //   if (courses) {
-    //     setIsLoaded(true);
-    //     console.log('courses:', courses);
-    //   }
-    // }, [courses, setIsLoaded]);
+    }, [currUser, dispatch]);
 
     return (
          <MainLayout>
             { isLoaded ? (
                 <>
+                    <div className="p-3"></div>
                     <div className="flex justify-between items-center">
                         <h1 className="text-xl font-medium text-dark-gray py-3">Dashboard</h1>
                     </div>

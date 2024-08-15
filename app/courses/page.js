@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getUserCourses, removeCourse, updateCourse } from "@/lib/features/courses/coursesSlice";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
 
 export default function Courses() {
     const dispatch = useAppDispatch();
@@ -107,8 +108,9 @@ export default function Courses() {
       <MainLayout>
         { isLoaded ? (
           <>
+            <div className="p-3"></div>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-medium text-dark-gray py-2">Courses</h1>
+              <h1 className="text-xl font-medium text-dark-gray py-3">Courses</h1>
               <button
                 onClick={() => openModal(
                     <AddCourseForm onClose={closeModal} userId={currUser.id} type='Course' />
@@ -123,7 +125,7 @@ export default function Courses() {
             </div>
             <div className="w-full">
               <div
-                className="flex flex-col w-full items-center justify-between py-4"
+                className="flex flex-col w-full items-center justify-between pb-4"
               >
                 { courses && courses.length > 0 ? (
                   courses.map((course) => (
