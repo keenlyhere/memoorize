@@ -15,9 +15,12 @@ export default function Dashboard() {
     let noCourses;
 
     useEffect(() => {
-        if (currUser && currUser.id !== 'null') {
-            dispatch(getUserCourses(currUser.id));
-            setIsLoaded(true);
+        if (currUser && currUser.isAuthenticated) {
+            dispatch(getUserCourses(currUser.id))
+            .unwrap()
+            .then(() => {
+                setIsLoaded(true);
+            });
         }
     }, [currUser, setIsLoaded, dispatch]);
 

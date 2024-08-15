@@ -13,6 +13,10 @@ export async function GET(request) {
     }
 
     try {
+        const flashcardSetRef = doc(db, 'FlashcardSets', setId);
+        const flashcardSetDoc = await getDoc(flashcardSetRef);
+        const flashcardSetData = flashcardSetDoc.data();
+
         const flashcardsCollection = collection(db, 'Flashcards');
         const flashcardsQuery = query(
             flashcardsCollection,
@@ -23,6 +27,7 @@ export async function GET(request) {
 
         const flashcards = flashcardsSnapshot.docs.map(doc => ({
             id: doc.id,
+            setTitle: flashcardSetData.setTitle,
             ...doc.data(),
         }));
 

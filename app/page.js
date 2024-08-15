@@ -23,7 +23,7 @@ export default function Home() {
 						email: user.primaryEmailAddress?.emailAddress,
 						avatar: user.imageUrl,
 					})
-				);
+				)
 			} else {
 				// clear user information in Redux store if not signed in
 				dispatch(clearUser());
@@ -32,7 +32,7 @@ export default function Home() {
 	}, [isLoaded, user, isSignedIn, dispatch]);
 
   	useEffect(() => {
-      if (currUser && currUser.id !== null) {
+      if (currUser && currUser.isAuthenticated) {
         setIsUserLoaded(true);
       }
     }, [currUser])

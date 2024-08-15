@@ -27,13 +27,19 @@ export async function GET(request) {
 		);
 		const setsSnapshot = await getDocs(setsQuery);
 
+		console.log('courseTitle:', coursesData.title);
+
 		const sets = setsSnapshot.docs.map((doc) => ({
 			id: doc.id,
-			courseTitle: coursesData.title,
 			...doc.data(),
 		}));
 
-		return NextResponse.json(sets, { status: 200 });
+		const res = {
+			sets,
+			courseTitle: coursesData.title,
+		}
+
+		return NextResponse.json(res, { status: 200 });
 	} catch (error) {
         console.error('Error fetching flashcard sets:', error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
