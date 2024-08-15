@@ -12,6 +12,7 @@ import {
 } from "@/lib/features/flashcards/flashcardsSlice";
 import { getCourseSets } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { getSingleCard } from "@/lib/features/flashcards/flashcardsSlice";
+import BackButton from "@/components/BackButton";
 
 const calculateNextReviewDate = (difficulty) => {
   const now = new Date();
@@ -175,8 +176,9 @@ export default function Set({ params }) {
     <MainLayout>
       {isLoaded ? (
         <>
+		  <BackButton>Back</BackButton>
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl font-medium text-dark-gray py-2">
+            <h1 className="text-xl font-medium text-dark-gray py-3">
               { flashcardSetTitle }
             </h1>
             <button
@@ -206,7 +208,7 @@ export default function Set({ params }) {
             {/* to-do: display flashcards here */}
 
             {viewMode === "all" ? (
-              <div className="flex flex-col w-full items-center justify-between py-4">
+              <div className="flex flex-col w-full items-center justify-between pb-4">
                 {flashcards && flashcards.length > 0 ? (
                   flashcards.map((flashcard) => (
                     <div

@@ -15,6 +15,7 @@ import {
   removeFlashcardSet,
   updateFlashcardSet,
 } from "@/lib/features/flashcardSets/flashcardSetsSlice";
+import BackButton from "@/components/BackButton";
 
 export default function Sets({ params }) {
     const dispatch = useAppDispatch();
@@ -128,8 +129,9 @@ export default function Sets({ params }) {
     <MainLayout>
       {isLoaded ? (
         <>
+          <BackButton>Back to Courses</BackButton>
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl font-medium text-dark-gray py-2">{ currCourse?.title }</h1>
+            <h1 className="text-xl font-medium text-dark-gray py-3">{ currCourse?.title }</h1>
             <button
               onClick={() =>
                 openModal(

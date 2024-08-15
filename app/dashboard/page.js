@@ -27,6 +27,7 @@ export default function Dashboard() {
          <MainLayout>
             { isLoaded ? (
                 <>
+                    <div className="p-3"></div>
                     <div className="flex justify-between items-center">
                         <h1 className="text-xl font-medium text-dark-gray py-3">Dashboard</h1>
                     </div>
