@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function Courses() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses, status, error } = useAppSelector((state) => state.courses);
+    const { courses } = useAppSelector((state) => state.courses);
     const [ isModalOpen, setIsModalOpen ] = useState(false);
     const [ modalContent, setModalContent ] = useState(null);
     const [ selectedCourseId, setSelectedCourseId ] = useState(null);
