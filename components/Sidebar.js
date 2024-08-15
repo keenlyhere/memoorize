@@ -92,7 +92,7 @@ export default function Sidebar({ user }) {
             </div>
             {/* user info */}
             <div className="lg:flex w-full items-center gap-4 hidden">
-                <SignOutButton>
+                <SignOutButton redirectUrl="/">
                     <button className="w-full text-primary-purple py-2 px-4 border border-primary-purple bg-white/75 rounded-lg hover:text-muted-purple hover:border-muted-purple" onClick={logout}>Sign out</button>
                 </SignOutButton>
             </div>
