@@ -14,6 +14,7 @@ import { getCourseSets } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { getSingleCard } from "@/lib/features/flashcards/flashcardsSlice";
 import BackButton from "@/components/BackButton";
 import Flashcard from "@/components/Flashcard";
+import Tabs from "@/components/Tabs";
 
 const calculateNextReviewDate = (difficulty) => {
   const now = new Date();
@@ -195,9 +196,10 @@ export default function Set({ params }) {
               Flashcard
             </button>
           </div>
-          <div className="w-full">
-            {/* to-do: display flashcards here */}
 
+          <Tabs activeTab={viewMode} onChange={handleViewModeChange} />
+
+          <div className="w-full">
             {viewMode === "all" ? (
               <div className="flex flex-col w-full items-center justify-between pb-4">
                 {flashcards && flashcards.length > 0 ? (
@@ -319,10 +321,7 @@ export default function Set({ params }) {
               </div>
             ) : (
               <div className="w-full flex items-center justify-center">
-                <div className="text-center p-6 bg-light-gray rounded-lg shadow-md">
-                  <p className="text-lg font-semibold text-dark-gray">
-                    Study Mode
-                  </p>
+                <div className="w-full text-center p-6">
                   {flashcards && flashcards.length > 0 ? (
                     flashcards.map((flashcard, index) => (
                       <div
