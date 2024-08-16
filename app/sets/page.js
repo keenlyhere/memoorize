@@ -62,7 +62,7 @@ export default function Courses() {
                       <div
                         className="h-2.5 rounded-full"
                         // style={{
-                        //   width: `${(course.cardsStudied / course.totalCards) * 100}%`,
+                        //   width: ${(course.cardsStudied / course.totalCards) * 100}%,
                         //   backgroundColor: course.progressColor,
                         // }}
                       ></div>

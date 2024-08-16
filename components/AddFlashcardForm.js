@@ -100,6 +100,8 @@ export default function AddFlashcardForm({ userId, setId, onClose }) {
             lastReviewedAt: null,
             nextReviewDate: null,
             reviewCount: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
           };
 
           await dispatch(addFlashcard(newFlashcard)).unwrap();

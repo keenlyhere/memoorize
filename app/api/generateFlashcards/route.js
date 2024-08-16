@@ -79,6 +79,11 @@ export async function POST(req) {
             setId,
             userId,
             isAIGenerated: true,
+            richMedia: null,
+            difficulty: null,
+            lastReviewedAt: null,
+            nextReviewDate: null,
+            reviewCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         }));
