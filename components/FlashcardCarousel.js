@@ -177,7 +177,7 @@ export default function FlashcardCarousel({ sessionId, flashcards, currUser, ini
 						Congratulations!
 					</h2>
 					<p className="text-dark-gray mt-2">
-						You've completed your study session. Great job!
+						You&apos;ve completed your study session. Great job!
 					</p>
 					<button
 						onClick={closeEndSessionModal}
