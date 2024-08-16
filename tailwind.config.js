@@ -29,6 +29,14 @@ module.exports = {
       animation: {
         'skeleton-wave': 'skeletonWave 1.5s infinite linear',
       },
+      transform: {
+        'preserve-3d': {
+          'transform-style': 'preserve-3d',
+        },
+        'backface-hidden': {
+          'backface-visibility': 'hidden',
+        },
+      }
     },
   },
   plugins: [],

@@ -14,26 +14,10 @@ import { getCourseSets } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { getSingleCard } from "@/lib/features/flashcards/flashcardsSlice";
 import BackButton from "@/components/BackButton";
 import Flashcard from "@/components/Flashcard";
-
-const calculateNextReviewDate = (difficulty) => {
-  const now = new Date();
-  let nextReviewDate = new Date(now);
-
-  switch (difficulty) {
-    case "easy":
-      nextReviewDate.setDate(now.getDate() + 3);
-      break;
-    case "medium":
-      nextReviewDate.setDate(now.getDate() + 2);
-      break;
-    case "hard":
-    default:
-      nextReviewDate.setDate(now.getDate() + 1);
-      break;
-  }
-
-  return nextReviewDate;
-};
+import Tabs from "@/components/Tabs";
+import StudyCard from "@/components/StudyCard";
+import FlashcardDifficulty from "@/components/FlashcardDifficulty";
+import FlashcardCarousel from "@/components/FlashcardCarousel";
 
 export default function Set({ params }) {
   const dispatch = useAppDispatch();
@@ -48,7 +32,9 @@ export default function Set({ params }) {
   const [editingFlashcardId, setEditingFlashcardId] = useState(null);
   const [editedQuestion, setEditedQuestion] = useState("");
   const [editedAnswer, setEditedAnswer] = useState("");
-  const [viewMode, setViewMode] = useState("all"); // 'all' or 'study'
+  const [viewMode, setViewMode] = useState("all");
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
 
   //test for get single card
 //   const flashcardId = "4kCgskZQshf65xo2Rh8x";
@@ -141,28 +127,6 @@ export default function Set({ params }) {
     setViewMode(mode);
   };
 
-  const handleDifficultyUpdate = (flashcardId, difficulty) => {
-    const now = new Date();
-    const nextReviewDate = calculateNextReviewDate(difficulty);
-
-    dispatch(
-      updateFlashcard({
-        id: flashcardId,
-        difficulty,
-        lastReviewedAt: now.toISOString(),
-        nextReviewDate: nextReviewDate.toISOString(),
-        userId: currUser.id,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        console.log("Difficulty and next review date updated successfully");
-      })
-      .catch((error) => {
-        console.error("Failed to update difficulty:", error);
-      });
-  };
-
   return (
     <MainLayout>
       {isLoaded ? (
@@ -195,9 +159,10 @@ export default function Set({ params }) {
               Flashcard
             </button>
           </div>
-          <div className="w-full">
-            {/* to-do: display flashcards here */}
 
+          <Tabs activeTab={viewMode} onChange={handleViewModeChange} />
+
+          <div className="w-full lg:h-fit h-full grow">
             {viewMode === "all" ? (
               <div className="flex flex-col w-full items-center justify-between pb-4">
                 {flashcards && flashcards.length > 0 ? (
@@ -318,42 +283,22 @@ export default function Set({ params }) {
                 )}
               </div>
             ) : (
-              <div className="w-full flex items-center justify-center">
-                <div className="text-center p-6 bg-light-gray rounded-lg shadow-md">
-                  <p className="text-lg font-semibold text-dark-gray">
-                    Study Mode
-                  </p>
-                  {flashcards && flashcards.length > 0 ? (
-                    flashcards.map((flashcard, index) => (
-                      <div
-                        key={flashcard.id}
-                        className="relative w-full h-64 p-6 mt-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:shadow-md"
-                        onClick={() => handleDifficultyUpdate(flashcard.id)}
-                      >
-                        <div className="flex flex-col items-center justify-center h-full">
-                          <p className="text-lg font-semibold text-dark-gray">
-                            {flashcard.question}
-                          </p>
-                        </div>
-                        {/* Overlay for Answer */}
-                        <div
-                          className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
-                          style={{
-                            transform: `rotateY(${
-                              index % 2 === 0 ? "180deg" : "0deg"
-                            })`,
-                          }}
-                        >
-                          <p className="text-sm text-gray-500">
-                            {flashcard.answer}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="dark:text-dark-gray">
-                      No flashcards available.
-                    </p>
+              <div className="w-full lg:h-fit h-full flex justify-center">
+                <div className="w-full h-full grow text-center px-6">
+                  {flashcards && flashcards.length > 0 && (
+                      // StudyCard
+                      // <div className="w-full lg:h-fit h-full flex flex-col content-center items-center gap-2 grow">
+                      //   <StudyCard
+                      //     question={flashcards[currentCardIndex].question}
+                      //     answer={flashcards[currentCardIndex].answer}
+                      //     flipped={flipped}
+                      //     onFlip={handleFlip}
+                      //   />
+                      //   {flipped && (
+                      //     <FlashcardDifficulty onDifficultySelect={handleDifficultyUpdate} />
+                      //   )}
+                      // </div>
+                      <FlashcardCarousel flashcards={flashcards} currUser={currUser} />
                   )}
                 </div>
               </div>

@@ -31,3 +31,15 @@ body {
     text-wrap: balance;
   }
 }
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.rotate-y-360 {
+  transform: rotateY(360deg);
+}
