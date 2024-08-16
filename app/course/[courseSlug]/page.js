@@ -140,6 +140,7 @@ export default function Sets({ params }) {
                     userId={currUser.id}
                     type="Set"
                     courseId={currCourse?.id}
+                    courseName={currCourse?.title}
                   />
                 )
               }
