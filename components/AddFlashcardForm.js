@@ -86,9 +86,8 @@ export default function AddFlashcardForm({ userId, setId, onClose }) {
     if (aiGenerated) {
       if (aiDescription) {
         try {
-          // Call your AI service here to generate the question and answer
-          const generatedQuestion = `Generated question for ${aiDescription}`; // Placeholder
-          const generatedAnswer = `Generated answer for ${aiDescription}`; // Placeholder
+          const generatedQuestion = `Generated question for ${aiDescription}`;
+          const generatedAnswer = `Generated answer for ${aiDescription}`;
 
           const newFlashcard = {
             question: generatedQuestion,
@@ -104,7 +103,7 @@ export default function AddFlashcardForm({ userId, setId, onClose }) {
           };
 
           await dispatch(addFlashcard(newFlashcard)).unwrap();
-          onClose(); // Close the modal after adding the flashcard
+          onClose(); // close the modal after adding the flashcard
         } catch (error) {
           setError('Failed to generate flashcard using AI.');
           console.error(error);
@@ -124,7 +123,7 @@ export default function AddFlashcardForm({ userId, setId, onClose }) {
 
       try {
         await dispatch(addFlashcard(newFlashcard)).unwrap();
-        onClose(); // Close the modal after adding the flashcard
+        onClose(); // close the modal after adding the flashcard
       } catch (error) {
         setError('Failed to add flashcard.');
         console.error(error);
