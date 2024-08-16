@@ -5,6 +5,8 @@ import FlashcardDifficulty from "./FlashcardDifficulty";
 import { useAppDispatch } from "@/lib/hooks";
 import { updateFlashcard } from "@/lib/features/flashcards/flashcardsSlice";
 import Modal from "./Modal";
+import { updateStudySession } from "@/lib/features/studySessions/studySessionsSlice";
+import { endStudySession } from "@/lib/features/studySessions/studySessionsSlice";
 
 const calculateNextReviewDate = (difficulty) => {
 	const now = new Date();
@@ -26,11 +28,14 @@ const calculateNextReviewDate = (difficulty) => {
 	return nextReviewDate;
 };
 
-export default function FlashcardCarousel({ flashcards, currUser }) {
+export default function FlashcardCarousel({ sessionId, flashcards, currUser, initialIndex, onSessionEnd }) {
 	const dispatch = useAppDispatch();
-	const [currentIndex, setCurrentIndex] = useState(0);
+	const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
 	const [flipped, setFlipped] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+    const [answerRevealed, setAnswerRevealed] = useState(false);
+    const [navigateDirection, setNavigateDirection] = useState(null);
+	const [isEndSessionModalOpen, setIsEndSessionModalOpen] = useState(false);
 
 	const totalCards = flashcards.length;
 
@@ -40,23 +45,49 @@ export default function FlashcardCarousel({ flashcards, currUser }) {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+        setAnswerRevealed(false);
+	};
+
+	const openEndSessionModal = () => {
+		setIsEndSessionModalOpen(true);
+	};
+
+	const closeEndSessionModal = () => {
+		setIsEndSessionModalOpen(false);
+		onSessionEnd();
 	};
 
 	const handleNext = () => {
-		if (currentIndex < flashcards.length - 1) {
-			setCurrentIndex(currentIndex + 1);
+        if (answerRevealed) {
+			openModal();
+			setNavigateDirection('next');
+		} else {
+			if (currentIndex < flashcards.length - 1) {
+				setCurrentIndex(currentIndex + 1);
+				setFlipped(false);
+				setAnswerRevealed(false);
+			}
 		}
 	};
 
 	const handlePrevious = () => {
-		if (currentIndex > 0) {
-			setCurrentIndex(currentIndex - 1);
+        if (answerRevealed) {
+			openModal();
+			setNavigateDirection('previous');
+		} else {
+			if (currentIndex > 0) {
+				setCurrentIndex(currentIndex - 1);
+				setFlipped(false);
+				setAnswerRevealed(false);
+			}
 		}
 	};
 
 	const flipCard = () => {
-		setFlipped(!flipped);
-        if (!flipped) {
+		if (!flipped) {
+			setFlipped(true);
+			setAnswerRevealed(true);
+		} else {
 			openModal();
 		}
 	};
@@ -79,35 +110,54 @@ export default function FlashcardCarousel({ flashcards, currUser }) {
 		)
 			.unwrap()
 			.then(() => {
-				console.log("Difficulty and next review date updated successfully");
-				if (currentIndex < flashcards.length - 1) {
-					setCurrentIndex(currentIndex + 1);
-					setFlipped(false);
-				}
+				dispatch(updateStudySession({
+                    sessionId,
+                    flashcardId,
+                    difficulty,
+                    reviewTime: now,
+					currentFlashcardIndex: currentIndex + 1,
+                }));
+
                 closeModal();
+
+				if (navigateDirection === 'next' && currentIndex < flashcards.length - 1) {
+					setCurrentIndex(currentIndex + 1);
+				} else if (navigateDirection === 'previous' && currentIndex > 0) {
+					setCurrentIndex(currentIndex - 1);
+				} else if (currentIndex < flashcards.length - 1) {
+					setCurrentIndex(currentIndex + 1);
+				}
+
+				setFlipped(false);
+				setAnswerRevealed(false);
+				setNavigateDirection(null);
+
+				if (currentIndex === totalCards - 1) {
+					// end session when finished all cards
+					endSession();
+				}
 			})
 			.catch((error) => {
 				console.error("Failed to update difficulty:", error);
 			});
 	};
 
+	const endSession = () => {
+		if (sessionId) {
+		dispatch(endStudySession({ sessionId }))
+			.unwrap()
+			.then(() => {
+				console.log("Study session ended.");
+				openEndSessionModal();
+			})
+			.catch((error) => {
+				console.error("Failed to end the session:", error);
+			});
+		}
+	};
+
 	return (
 		<div className="flex flex-col items-center justify-center w-full h-full">
-			{/* <div className="relative w-11/12 max-w-md bg-gray-800 rounded-lg shadow-lg p-6 text-white">
-        <div
-          className={`relative w-full h-64 bg-white rounded-lg shadow-lg text-dark-gray p-6 cursor-pointer transition-transform duration-500 ${
-            flipped ? "transform rotate-y-180" : ""
-          }`}
-          onClick={flipCard}
-        >
-          <div className={`absolute inset-0 flex items-center justify-center ${flipped ? "hidden" : "block"}`}>
-            <p className="text-2xl">{currentCard.question}</p>
-          </div>
-          <div className={`absolute inset-0 flex items-center justify-center ${flipped ? "block" : "hidden"}`}>
-            <p className="text-2xl">{currentCard.answer}</p>
-          </div>
-        </div>
-      </div> */}
 			<StudyCard
 				question={currentCard.question}
 				answer={currentCard.answer}
@@ -120,6 +170,23 @@ export default function FlashcardCarousel({ flashcards, currUser }) {
 					<FlashcardDifficulty onDifficultySelect={handleDifficultyUpdate} />
 				</Modal>
 			)}
+
+			<Modal isOpen={isEndSessionModalOpen} onClose={closeEndSessionModal}>
+				<div className="text-center">
+					<h2 className="text-lg font-semibold text-dark-gray">
+						Congratulations!
+					</h2>
+					<p className="text-dark-gray mt-2">
+						You've completed your study session. Great job!
+					</p>
+					<button
+						onClick={closeEndSessionModal}
+						className="mt-4 px-4 py-2 bg-primary-purple text-white rounded-lg"
+					>
+						Done
+					</button>
+				</div>
+			</Modal>
 
 			<div className="flex items-center justify-between mt-4 w-2/3">
 				<button
