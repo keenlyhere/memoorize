@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses } = useAppSelector((state) => state.courses);
+    const { courses, totalSets } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
 
     useEffect(() => {
@@ -42,13 +42,15 @@ export default function Dashboard() {
                                 </p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-lg border">
+                        <div className="bg-white p-6 rounded-lg border flex flex-col">
                             <h2 className="text-lg font-semibold text-dark-gray">Total Flashcard Sets</h2>
-                            <p className="text-2xl font-bold text-primary-purple">
-                                {/* to-do: dynamically render total flashcard sets */}
-                            </p>
+                            <div className="grow content-center">
+                                <p className="text-6xl font-bold text-primary-purple">
+                                    { totalSets }
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-white p-6 rounded-lg border">
+                        <div className="bg-white p-6 rounded-lg border flex flex-col">
                             <h2 className="text-lg font-semibold text-dark-gray">Total Flashcards</h2>
                             <p className="text-2xl font-bold text-primary-purple">
                                 {/* to-do: dynamically render total flashcards */}

@@ -1,5 +1,5 @@
 import { db } from "@/firebase";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 // GET all flashcards in a set
@@ -113,8 +113,25 @@ export async function POST(request) {
             });
         }
 
-        const newFlashcardSnapshot = await getDoc(newFlashcardRef);
-        return NextResponse.json(newFlashcardSnapshot.data(), { status: 200 });
+        // update the flashcard count in the corresponding set
+        const flashcardSetDocRef = doc(db, 'FlashcardSets', flashcardData.setId);
+        await updateDoc(flashcardSetDocRef, {
+            flashcardCount: increment(1),
+        })
+
+        // fetch updated flashcard set data
+        const updatedFlashcardSetSnapshot = await getDoc(flashcardSetDocRef);
+        const updatedFlashcardSetData = updatedFlashcardSetSnapshot.data();
+
+        const newFlashcardDocRef = await getDoc(newFlashcardRef);
+        const newFlashcardData = newFlashcardDocRef.data();
+
+        const response = {
+            newFlashcard: newFlashcardData,
+            updatedSet: updatedFlashcardSetData,
+        }
+
+        return NextResponse.json(response, { status: 200 });
     } catch (error) {
         console.error('Error adding flashcard:', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -145,9 +162,25 @@ export async function DELETE(request) {
             return NextResponse.json({ error: 'You cannot delete a flashcard that is not yours' }, { status: 403 });
         }
 
+        // delete flashcard
         await deleteDoc(flashcardDocRef);
 
-        return NextResponse.json({ message: "Flashcard set deleted successfully" }, { status: 200 });
+        // update the flashcard count in the corresponding set
+        const flashcardSetDocRef = doc(db, 'FlashcardSets', flashcardData.setId);
+        await updateDoc(flashcardSetDocRef, {
+            flashcardCount: increment(-1),
+        })
+
+        // fetch updated flashcard set data
+        const updatedFlashcardSetSnapshot = await getDoc(flashcardSetDocRef);
+        const updatedFlashcardSetData = updatedFlashcardSetSnapshot.data();
+
+        const response = {
+            message: "Flashcard set deleted successfully",
+            updatedSet: updatedFlashcardSetData,
+        }
+
+        return NextResponse.json(response, { status: 200 });
     } catch (error) {
         console.error('Error deleting flashcard:', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });

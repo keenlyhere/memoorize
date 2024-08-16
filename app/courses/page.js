@@ -190,7 +190,7 @@ export default function Courses() {
                                 </span>
                               )}
                               <span className="text-sm text-gray-500">
-                                # of sets studied of total sets
+                                # of sets studied of { course.setCount ? course.setCount : 0 } sets
                               </span>
 
                               {/* progress */}
