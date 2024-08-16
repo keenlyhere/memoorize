@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { setUserProperties } from "firebase/analytics";
+import { useUser } from "@clerk/nextjs";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 
 const ResultPage = () => {
   const searchParams = useSearchParams();
   const session_id = searchParams.get("session_id");
   const router = useRouter();
+  const { user } = useUser();
 
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
@@ -22,6 +25,16 @@ const ResultPage = () => {
         const sessionData = await res.json();
         if (res.ok) {
           setSession(sessionData);
+
+          //get planid from metadata from post request checkout_session object
+          const planId = sessionData.metadata?.planId;
+          // update plan if successful
+          if (sessionData.payment_status === "paid" && user) {
+            const userRef = doc(db, "Users", user.id);
+            await updateDoc(userRef, {
+              subscriptionPlan: planId,
+            });
+          }
         } else {
           setError(sessionData.error);
         }
@@ -32,7 +45,7 @@ const ResultPage = () => {
       }
     };
     fetchCheckoutSession();
-  }, [session_id]);
+  }, [session_id, user]);
 
   if (loading) {
     return (

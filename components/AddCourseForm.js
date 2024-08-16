@@ -2,26 +2,38 @@
 import { addCourse } from "@/lib/features/courses/coursesSlice";
 import { addFlashcardSet } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function AddCourseForm({ onClose, userId, type, courseId }) {
+export default function AddCourseForm({ onClose, userId, type, courseId, courseName }) {
     const { status, error } = useAppSelector((state) => state.courses);
     const [title, setTitle] = useState('');
-    const [ errors, setErrors ] = useState(null);
+    const [aiGeneration, setAiGeneration] = useState(false);
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [errors, setErrors] = useState(null);
     const dispatch = useAppDispatch();
+
+    //autofill prompt box with course name
+    useEffect(() => {
+        if (aiGeneration && courseName) {
+            setAiPrompt(`${courseName}: `);
+        }
+    }, [aiGeneration, courseName]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!title) {
-            setErrors('Course title is required');
+            setErrors('Title is required');
             return;
         }
 
         const newAdd = {
             title,
-            userId
-        }
+            userId,
+            aiGeneration,
+            aiPrompt: aiGeneration ? aiPrompt : null,
+            courseId
+        };
 
         if (type === 'Course') {
             dispatch(addCourse(newAdd))
@@ -32,11 +44,11 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                 })
                 .catch((err) => {
                     console.error('Failed to add course:', err);
-                })
+                });
         }
 
         if (type === 'Set') {
-            dispatch(addFlashcardSet({...newAdd, courseId}))
+            dispatch(addFlashcardSet(newAdd))
                 .unwrap()
                 .then(() => {
                     setTitle('');
@@ -44,7 +56,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                 })
                 .catch((err) => {
                     console.error('Failed to add flashcard set:', err);
-                })
+                });
         }
     };
 
@@ -57,8 +69,8 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    className="peer w-full p-3 h-12 border border-gray-300 rounded-md outline-none focus:border-primary-purple focus:ring-0 focus:outline-none transition-all bg-white text-dark-gray placeholder-transparent"
-                    placeholder="Course Name"
+                    className="peer w-full p-3 h-12 border border-gray-300 rounded-md outline-none focus:border-primary-purple focus:ring-0 transition-all bg-white text-dark-gray placeholder-transparent"
+                    placeholder={`${type} Name`}
                     id="courseTitle"
                 />
                 <label
@@ -69,15 +81,42 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                 </label>
             </div>
 
-            { status === 'failed' && <p className="text-red-500 text-sm mb-4">{error}</p> }
-            { errors && errors.length && <p className="text-red-500 text-sm mb-4">{errors}</p> }
+            {type === 'Set' && (
+                <>
+                    <div className="mb-4">
+                        <label className="flex items-center space-x-3">
+                            <input
+                                type="checkbox"
+                                checked={aiGeneration}
+                                onChange={() => setAiGeneration(!aiGeneration)}
+                                className="form-checkbox"
+                            />
+                            <span className="text-gray-700">Generate flashcards using AI</span>
+                        </label>
+                    </div>
+
+                    {aiGeneration && (
+                        <div className="relative mb-4">
+                            <textarea
+                                value={aiPrompt}
+                                onChange={(e) => setAiPrompt(e.target.value)}
+                                placeholder="Enter a prompt for AI to generate flashcards"
+                                className="w-full p-3 h-24 border border-gray-300 rounded-md outline-none focus:border-primary-purple focus:ring-0 transition-all bg-white text-dark-gray"
+                            />
+                        </div>
+                    )}
+                </>
+            )}
+
+            {status === 'failed' && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            {errors && <p className="text-red-500 text-sm mb-4">{errors}</p>}
 
             <div className="flex justify-end space-x-4">
                 <button
                     type="button"
                     onClick={onClose}
                     className="bg-gray-300 text-dark-gray py-2 px-4 rounded-lg"
-                    disabled={ status === 'loading' }
+                    disabled={status === 'loading'}
                 >
                     Cancel
                 </button>
@@ -85,7 +124,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                     type="submit"
                     className="bg-primary-purple text-white py-2 px-4 rounded-lg w-36"
                 >
-                    { status === 'loading' ? (
+                    {status === 'loading' ? (
                         <div className="flex content-between gap-2 justify-center items-center">
                             <svg aria-hidden="true" className="w-5 h-5 font-bold text-light-gray animate-spin dark:text-light-gray/50 fill-light-gray" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -93,9 +132,9 @@ export default function AddCourseForm({ onClose, userId, type, courseId }) {
                             </svg>
                             Adding...
                         </div>
-                    ) : `Add ${type}` }
+                    ) : `Add ${type}`}
                 </button>
             </div>
         </form>
-    )
+    );
 }
