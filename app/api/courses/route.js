@@ -44,6 +44,7 @@ export async function POST(request) {
         const newCourseDocRef = await addDoc(collection(db, 'Courses'), {
             title,
             userId,
+            setCount: 0,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         });

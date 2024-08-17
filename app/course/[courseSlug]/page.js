@@ -216,7 +216,7 @@ export default function Sets({ params }) {
                             </span>
                           )}
                           <span className="text-sm text-gray-500">
-                            # of flashcards studied of total flashcards
+                            # of flashcards studied of { set.flashcardCount ? set.flashcardCount : 0 } flashcards
                           </span>
 
                           {/* progress */}
