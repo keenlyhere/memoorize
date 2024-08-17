@@ -70,7 +70,7 @@ export default function Home() {
         { amount: "3", feature: "Courses" },
         { amount: "5", feature: "AI-Generated Flashcards per Month" },
       ],
-      buttonText: "Get Started",
+      buttonText: "Start Free",
       buttonLink: "#",
     },
     {
@@ -82,7 +82,7 @@ export default function Home() {
         { amount: "10", feature: "Courses" },
         { amount: "50", feature: "AI-Generated Flashcards per Month" },
       ],
-      buttonText: "Get Started",
+      buttonText: "Start Basic",
       buttonLink: "#",
     },
     {
@@ -94,7 +94,7 @@ export default function Home() {
         { amount: "Unlimited", feature: "Courses" },
         { amount: "500", feature: "AI-Generated Flashcards per Month" },
       ],
-      buttonText: "Get Started",
+      buttonText: "Start Pro",
       buttonLink: "#",
     },
   ];
@@ -149,23 +149,25 @@ export default function Home() {
       {/* Header */}
       <header className="bg-light-gray text-dark-gray py-6 shadow-md">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-3xl font-bold">
-            me
-            <span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">
-              moo
-            </span>
-            rize
-          </h1>
+          <a href="/">
+            <h1 className="text-3xl font-bold">
+              me
+              <span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">
+                moo
+              </span>
+              rize
+            </h1>
+          </a>
           <nav className="flex items-center space-x-6">
-            <a href="#" className="hover:text-accent-pink">
+            <a href="#features" className="hover:text-accent-pink">
               Features
             </a>
-            <a href="#" className="hover:text-accent-pink">
+            <a href="#pricing" className="hover:text-accent-pink">
               Pricing
             </a>
-            <a href="#" className="hover:text-accent-pink">
+            {/* <a href="#" className="hover:text-accent-pink">
               Contact
-            </a>
+            </a> */}
 
             {isLoaded && isUserLoaded ? (
               <a
@@ -221,14 +223,14 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-gradient-to-l py-20">
+      <section className="bg-gradient-to-l py-20" id="features">
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-4xl font-bold mb-8 text-light-gray">
             Why Choose me<span className="text-muted-purple">moo</span>rize?
           </h3>
-          <div className="flex flex-wrap -mx-4">
-            <div className="w-full md:w-1/3 px-4 mb-8">
-              <div className="p-8 bg-white rounded-lg shadow-lg">
+          <div className="flex flex-wrap -mx-4 h-max">
+            <div className="w-full md:w-1/3 md:px-4 px-8 mb-8 grow">
+              <div className="p-8 bg-white rounded-lg shadow-lg h-full">
                 <h4 className="text-2xl font-bold mb-4">
                   AI-Powered Flashcards
                 </h4>
@@ -238,8 +240,8 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="w-full md:w-1/3 px-4 mb-8">
-              <div className="p-8 bg-white rounded-lg shadow-lg">
+            <div className="w-full md:w-1/3 md:px-4 px-8 mb-8 grow">
+              <div className="p-8 bg-white rounded-lg shadow-lg h-full">
                 <h4 className="text-2xl font-bold mb-4">
                   Customizable Learning
                 </h4>
@@ -249,8 +251,8 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="w-full md:w-1/3 px-4">
-              <div className="p-8 bg-white rounded-lg shadow-lg">
+            <div className="w-full md:w-1/3 md:px-4 px-8 mb-8 grow">
+              <div className="p-8 bg-white rounded-lg shadow-lg h-full">
                 <h4 className="text-2xl font-bold mb-4">Track Your Progress</h4>
                 <p>
                   Monitor your learning journey and see how much you&apos;ve
@@ -263,19 +265,19 @@ export default function Home() {
       </section>
 
      {/* Pricing Section */}
-<section className="py-20 text-dark-gray">
-  <div className="container mx-auto px-4 text-center">
+<section className="py-20 text-dark-gray" id="pricing">
+  <div className="px-4 text-center w-full">
     <h3 className="text-4xl font-bold mb-8">Affordable Pricing Plans</h3>
-    <div className="flex flex-wrap -mx-4">
+    <div className="flex flex-wrap w-full">
       {pricingPlans.map((singlePlan) => (
-        <div key={singlePlan.name} className="w-full md:w-1/3 px-4 mb-8">
-          <div className="p-8 bg-white rounded-lg shadow-sm text-dark-gray">
+        <div key={singlePlan.name} className="w-full md:w-1/3 md:px-4 px-8 mb-8">
+          <div className="p-8 bg-white rounded-lg shadow-sm text-dark-gray w-full">
             <h4 className="text-2xl font-bold mb-4">{singlePlan.name}</h4>
             <p className="text-xl">{singlePlan.price}</p>
             <ul className="mt-4 text-left">
               {singlePlan.features.map((feature, index) => (
-                <li key={index} className="mb-2">
-                  <span className="text-primary-purple font-semibold">{feature.amount}</span> {feature.feature}
+                <li key={index} className="py-4 px-2 flex justify-between [&:not(:last-child)]:border-b">
+                  <span className="w-2/3">{feature.feature}</span> <span className="text-primary-purple font-semibold">{feature.amount}</span>
                 </li>
               ))}
             </ul>

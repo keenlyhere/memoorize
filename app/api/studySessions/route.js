@@ -2,6 +2,8 @@ import { db } from "@/firebase";
 import { collection, addDoc, Timestamp, getDocs, query, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
+
+
 // GET active study session
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

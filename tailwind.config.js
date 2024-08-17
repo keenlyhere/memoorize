@@ -25,9 +25,14 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        progress: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
       },
       animation: {
         'skeleton-wave': 'skeletonWave 1.5s infinite linear',
+        progress: 'progress 2s ease-in-out forwards',
       },
       transform: {
         'preserve-3d': {

@@ -113,8 +113,11 @@ export async function POST(request) {
             });
         }
 
+        const newFlashcardDocRef = await getDoc(newFlashcardRef);
+        const newFlashcardData = newFlashcardDocRef.data();
+
         // update the flashcard count in the corresponding set
-        const flashcardSetDocRef = doc(db, 'FlashcardSets', flashcardData.setId);
+        const flashcardSetDocRef = doc(db, 'FlashcardSets', newFlashcardData.setId);
         await updateDoc(flashcardSetDocRef, {
             flashcardCount: increment(1),
         })
@@ -123,8 +126,6 @@ export async function POST(request) {
         const updatedFlashcardSetSnapshot = await getDoc(flashcardSetDocRef);
         const updatedFlashcardSetData = updatedFlashcardSetSnapshot.data();
 
-        const newFlashcardDocRef = await getDoc(newFlashcardRef);
-        const newFlashcardData = newFlashcardDocRef.data();
 
         const response = {
             newFlashcard: newFlashcardData,

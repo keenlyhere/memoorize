@@ -9,6 +9,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
     const [title, setTitle] = useState('');
     const [aiGeneration, setAiGeneration] = useState(false);
     const [aiPrompt, setAiPrompt] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
     const [errors, setErrors] = useState(null);
     const dispatch = useAppDispatch();
 
@@ -35,11 +36,15 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
             courseId
         };
 
+
+        setIsGenerating(true); // Set generating state
+
         if (type === 'Course') {
             dispatch(addCourse(newAdd))
                 .unwrap()
                 .then(() => {
                     setTitle('');
+                    setIsGenerating(false); // Reset generating state
                     onClose();
                 })
                 .catch((err) => {
@@ -52,6 +57,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
                 .unwrap()
                 .then(() => {
                     setTitle('');
+                    setIsGenerating(false); // Reset generating state
                     onClose();
                 })
                 .catch((err) => {
@@ -114,6 +120,10 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
                 {errors && <p className="text-red-500 text-sm">{errors}</p>}
             </div>
 
+            {isGenerating && aiGeneration && (
+                <p className="text-blue-500 text-sm mb-4">Your cards are being generated...</p>
+            )}
+
             <div className="flex justify-end space-x-4">
                 <button
                     type="button"
@@ -126,8 +136,9 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
                 <button
                     type="submit"
                     className="bg-primary-purple text-white py-2 px-4 rounded-lg w-36"
+                    // disabled={isGenerating}
                 >
-                    {status === 'loading' ? (
+                    { status === 'loading' ? (
                         <div className="flex content-between gap-2 justify-center items-center">
                             <svg aria-hidden="true" className="w-5 h-5 font-bold text-light-gray animate-spin dark:text-light-gray/50 fill-light-gray" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
