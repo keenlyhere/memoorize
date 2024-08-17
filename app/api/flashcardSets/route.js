@@ -1,5 +1,5 @@
 import { db } from "@/firebase";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 // GET all flashcard sets for a course
@@ -78,23 +78,34 @@ export async function POST(request) {
 
 		// check if user exceeded set limit
 		const flashcardSetsCollection = collection(db, "FlashcardSets");
-		const flashcardSetsSnapshot = await getDocs(
+		const flashcardSetsQuery = query(
 			flashcardSetsCollection,
 			where("userId", "==", userId),
-			where("courseId", "==", courseId)
+		)
+		const flashcardSetsSnapshot = await getDocs(
+			flashcardSetsQuery,
 		);
+		const flashcardSetsData = flashcardSetsSnapshot.docs.map(doc => ({
+			id: doc.id,
+			...doc.data(),
+		}));
+		console.log('flashcardSetsData:', flashcardSetsData)
 
 		if (flashcardSetsSnapshot.size >= setLimit) {
+			console.log('flashcardSetsSnapshot.size:', flashcardSetsSnapshot.size, 'setLimit:', setLimit);
+			console.log('Error: you have reached the flashcard set limit for your subscription plan.')
 			return NextResponse.json(
-				{ error: "You have reached your flashcard set limit for your subscription plan." },
+				{ error: "You have reached your flashcard set limit " },
 				{ status: 403 }
 			);
 		}
 
+		// add new flashcard set
 		const newSetDocRef = await addDoc(flashcardSetsCollection, {
 			title,
 			courseId,
 			userId,
+			flashcardCount: 0,
 			createdAt: serverTimestamp(),
 			updatedAt: serverTimestamp(),
 		});
@@ -103,10 +114,26 @@ export async function POST(request) {
 			id: newSetDocRef.id,
 		});
 
+		// update the set count in the corresponding course
+		const courseDocRef = doc(db, 'Courses', courseId);
+		await updateDoc(courseDocRef, {
+			setCount: increment(1),
+		})
+
+		// fetch updated course data
+		const updatedCourseSnapshot = await getDoc(courseDocRef);
+		const updatedCourseData = updatedCourseSnapshot.data();
+
 		const newSetRef = await getDoc(newSetDocRef);
 		const newSetData = newSetRef.data();
 
-		return NextResponse.json(newSetData, { status: 200 });
+		const response = {
+			newSet: newSetData,
+			updatedCourse: updatedCourseData
+		}
+
+
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
         console.error('Error adding flashcard set:', error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });
@@ -137,9 +164,25 @@ export async function DELETE(request) {
 			return NextResponse.json({ error: "You cannot delete a flashcard set that is not yours" }, { status: 403 });
 		}
 
+		// delete flashcard set
 		await deleteDoc(flashcardSetsDocRef);
 
-		return NextResponse.json({ message: "Flashcard set deleted successfully" }, { status: 200 });
+		// update the set count in the corresponding course
+		const courseDocRef = doc(db, 'Courses', flashcardSetsData.courseId);
+		await updateDoc(courseDocRef, {
+			setCount: increment(-1),
+		})
+
+		// fetch updated course data
+		const updatedCourseSnapshot = await getDoc(courseDocRef);
+		const updatedCourseData = updatedCourseSnapshot.data();
+
+		const response = {
+			message: "Flashcard set deleted successfully",
+			updatedCourse: updatedCourseData,
+		}
+
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
         console.error('Error deleting flashcard set:', error.message);
 		return NextResponse.json({ error: error.message }, { status: 500 });

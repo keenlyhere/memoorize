@@ -61,6 +61,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
                     onClose();
                 })
                 .catch((err) => {
+                    setErrors(err);
                     console.error('Failed to add flashcard set:', err);
                 });
         }
@@ -89,7 +90,7 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
 
             {type === 'Set' && (
                 <>
-                    <div className="mb-4">
+                    <div className="mb-2">
                         <label className="flex items-center space-x-3">
                             <input
                                 type="checkbox"
@@ -114,8 +115,10 @@ export default function AddCourseForm({ onClose, userId, type, courseId, courseN
                 </>
             )}
 
-            {status === 'failed' && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            {errors && <p className="text-red-500 text-sm mb-4">{errors}</p>}
+            <div className="h-4 mb-4">
+                {status === 'failed' && <p className="text-red-500 text-sm">{error}</p>}
+                {errors && <p className="text-red-500 text-sm">{errors}</p>}
+            </div>
 
             {isGenerating && aiGeneration && (
                 <p className="text-blue-500 text-sm mb-4">Your cards are being generated...</p>

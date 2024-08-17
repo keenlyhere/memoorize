@@ -10,13 +10,14 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
     const dispatch = useAppDispatch();
     const currUser = useAppSelector((state) => state.user);
-    const { courses } = useAppSelector((state) => state.courses);
+    const { courses, totalSets } = useAppSelector((state) => state.courses);
     const [ isLoaded, setIsLoaded ] = useState(false);
 
     const [totalFlashcardSets, setTotalFlashcardSets] = useState(0);
     const [totalFlashcards, setTotalFlashcards] = useState(0);
     const [flashcardsDueToday, setFlashcardsDueToday] = useState(0);
     const [recentActivity, setRecentActivity] = useState([]);
+    const [ isActivityLoaded, setIsActivityLoaded ] = useState(false);
 
 
     useEffect(() => {
@@ -77,6 +78,7 @@ export default function Dashboard() {
             // Sort activities by last reviewed time
             activities.sort((a, b) => new Date(b.lastReviewedAt) - new Date(a.lastReviewedAt));
             setRecentActivity(activities.slice(0, 5)); // Display only the most recent 5 activities
+            setIsActivityLoaded(true);
 
         } catch (error) {
             console.error("Failed to fetch dashboard data:", error);
@@ -85,7 +87,7 @@ export default function Dashboard() {
 
     return (
         <MainLayout>
-            {isLoaded ? (
+            {isActivityLoaded ? (
                 <>
                     <div className="p-3"></div>
                     <div className="flex justify-between items-center">
@@ -102,17 +104,21 @@ export default function Dashboard() {
                                 </p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-lg border">
+                        <div className="bg-white p-6 rounded-lg border flex flex-col">
                             <h2 className="text-lg font-semibold text-dark-gray">Total Flashcard Sets</h2>
-                            <p className="text-2xl font-bold text-primary-purple">
-                                {totalFlashcardSets}
-                            </p>
+                            <div className="grow content-center">
+                                <p className="text-6xl font-bold text-primary-purple">
+                                    { totalSets }
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-white p-6 rounded-lg border">
+                        <div className="bg-white p-6 rounded-lg border flex flex-col">
                             <h2 className="text-lg font-semibold text-dark-gray">Total Flashcards</h2>
-                            <p className="text-2xl font-bold text-primary-purple">
-                                {totalFlashcards}
-                            </p>
+                            <div className="grow content-center">
+                                <p className="text-6xl font-bold text-primary-purple">
+                                    { totalFlashcards }
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -120,29 +126,33 @@ export default function Dashboard() {
                         {/* upcoming reviews */}
                         <div className="bg-white p-6 rounded-lg border mb-6 col-span-1 h-full">
                             <h2 className="text-lg font-semibold text-dark-gray">Flashcards due today:</h2>
-                            <p className="text-4xl font-bold text-primary-purple">
-                                {flashcardsDueToday}
-                            </p>
+                            <div className="grow content-center">
+                                <p className="text-6xl font-bold text-primary-purple">
+                                    { flashcardsDueToday }
+                                </p>
+                            </div>
                         </div>
                         {/* Recent Activity */}
                         <div className="bg-white p-6 rounded-lg border mb-6 h-full col-span-2">
-                            <h2 className="text-lg font-semibold text-dark-gray">Recent Activity</h2>
-                            <ul className="space-y-3">
-                                {recentActivity.length > 0 ? (
-                                    recentActivity.map((activity, index) => (
-                                        <li key={index} className="flex justify-between">
-                                            <span className="text-muted-pink">
-                                                {activity.activity}
-                                            </span>
-                                            <span className="text-muted-purple">
-                                                {new Date(activity.lastReviewedAt).toLocaleDateString()}
-                                            </span>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p>No recent activity</p>
-                                )}
-                            </ul>
+                            <h2 className="text-lg font-semibold text-dark-gray mb-3">Recent Activity</h2>
+                            <div className="grow content-center">
+                                <ul className="space-y-3">
+                                    {recentActivity.length > 0 ? (
+                                        recentActivity.map((activity, index) => (
+                                            <li key={index} className="flex justify-between">
+                                                <span className="text-gray-500">
+                                                    {activity.activity}
+                                                </span>
+                                                <span className="text-muted-purple">
+                                                    {new Date(activity.lastReviewedAt).toLocaleDateString()}
+                                                </span>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <p>No recent activity</p>
+                                    )}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </>

@@ -21,7 +21,7 @@ export default function Sets({ params }) {
   const dispatch = useAppDispatch();
   const currUser = useAppSelector((state) => state.user);
   const courseId = params.courseSlug;
-  const { allFlashcardSets } = useAppSelector((state) => state.flashcardSets);
+  const { flashcardSets, allFlashcardsPerSet } = useAppSelector((state) => state.flashcardSets);
   const { flashcards } = useAppSelector((state) => state.flashcards);
   const currCourse = useAppSelector((state) => state.courses.currCourse);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,39 +44,43 @@ export default function Sets({ params }) {
       dispatch(getCourseSets({ courseId, userId }))
         .unwrap()
         .then(() => {
-          const filteredFlashcardSets = allFlashcardSets.filter((set) => set.courseId === courseId);
-          const fetchFlashcardsPromises = filteredFlashcardSets.map(set =>
-            dispatch(getFlashcards({ setId: set.id, userId })).unwrap()
-          );
+          // const filteredFlashcardSets = allFlashcardSets.filter((set) => set.courseId === courseId);
+          // const fetchFlashcardsPromises = filteredFlashcardSets.map(set =>
+          //   dispatch(getFlashcards({ setId: set.id, userId })).unwrap()
+          // );
 
-          Promise.all(fetchFlashcardsPromises).then(fetchedFlashcardsArray => {
-            const accumulatedFlashcards = fetchedFlashcardsArray.flat();
-            setAllFlashcards(accumulatedFlashcards); // Update local state with all flashcards
-            setIsLoaded(true);
-          });
+          // Promise.all(fetchFlashcardsPromises).then(fetchedFlashcardsArray => {
+          //   const accumulatedFlashcards = fetchedFlashcardsArray.flat();
+          //   setAllFlashcards(accumulatedFlashcards); // Update local state with all flashcards
+          // });
+
+          setIsLoaded(true);
         });
     }
-  }, [currUser, courseId, dispatch, allFlashcardSets]);
+  }, [currUser, courseId, dispatch]);
 
   const calculateCardProgress = (set) => {
-    const setFlashcardsObj = allFlashcards.find(flashcardSet => flashcardSet.setTitle === set.title);
-    const setFlashcards = setFlashcardsObj ? setFlashcardsObj.flashcards : [];
+    const currentSet = allFlashcardsPerSet[set.id];
 
-    const totalCards = setFlashcards.length;
-    const studiedCards = setFlashcards.filter(flashcard => flashcard.lastReviewedAt !== null).length;
+    const studiedCards = Object.values(currentSet).filter((flashcard) => flashcard.lastReviewedAt !== null).length;
+    console.log('studiedCards:', studiedCards);
 
-    console.log('set',set)
-    console.log('setFlashcardsObj',setFlashcardsObj)
-    console.log('setFlashcards',setFlashcards)
-    console.log('totalCards',totalCards)
-    console.log('studiedCards',studiedCards)
+    const progressPercentage = set.flashcardCount > 0 ? ( studiedCards / set.flashcardCount ) * 100 : 0;
+    return { studiedCards, progressPercentage };
 
-    const progressPercentage = totalCards > 0 ? (studiedCards / totalCards) * 100 : 0;
 
-    return { studiedCards, totalCards, progressPercentage };
+    // const setFlashcardsObj = allFlashcards.find(flashcardSet => flashcardSet.setTitle === set.title);
+    // const setFlashcards = setFlashcardsObj ? setFlashcardsObj.flashcards : [];
+
+    // const totalCards = setFlashcards.length;
+    // const studiedCards = setFlashcards.filter(flashcard => flashcard.lastReviewedAt !== null).length;
+
+    // const progressPercentage = totalCards > 0 ? (studiedCards / totalCards) * 100 : 0;
+
+    // return { studiedCards, totalCards, progressPercentage };
   };
 
-  const filteredFlashcardSets = allFlashcardSets.filter((set) => set.courseId === courseId);
+  // const filteredFlashcardSets = flashcardSets.filter((set) => set.courseId === courseId);
 
   const openModal = (content) => {
     setModalContent(content);
@@ -104,7 +108,6 @@ export default function Sets({ params }) {
       setId: flashcardSetId,
       userId,
     };
-    console.log("deleting:", flashcardSetData);
 
     dispatch(removeFlashcardSet(flashcardSetData))
       .unwrap()
@@ -118,18 +121,15 @@ export default function Sets({ params }) {
   };
 
   const handleEditClick = (course) => {
-    console.log("in function handleEditClick");
     setEditingFlashcardSetId(course.id);
     setEditedTitle(course.title);
   };
 
   const handleTitleChange = (e) => {
-    console.log("in function handleTitleChange");
     setEditedTitle(e.target.value);
   };
 
   const handleTitleSubmit = (flashcardSetId) => {
-    console.log("in function handleTitleSubmit");
     dispatch(
       updateFlashcardSet({
         id: flashcardSetId,
@@ -147,7 +147,6 @@ export default function Sets({ params }) {
   };
 
   const handleTitleBlur = (courseId, originalTitle) => {
-    console.log("in function handleTitleBlur");
     if (editedTitle !== originalTitle) {
       handleTitleSubmit(courseId);
     } else {
@@ -189,9 +188,9 @@ export default function Sets({ params }) {
           </div>
           <div className="w-full">
             <div className="flex flex-col w-full items-center justify-between py-4">
-              {filteredFlashcardSets && filteredFlashcardSets.length > 0 ? (
-                filteredFlashcardSets.map((set) => {
-                  const { studiedCards, totalCards, progressPercentage } = calculateCardProgress(set);
+              {flashcardSets && flashcardSets.length > 0 ? (
+                flashcardSets.map((set) => {
+                  const { studiedCards, progressPercentage } = calculateCardProgress(set);
                   return (
                     <div
                       key={set.id}
@@ -203,14 +202,14 @@ export default function Sets({ params }) {
                         className="flex w-full items-center space-x-4 grow"
                       >
                         {/* flashcard set status */}
-                        <div className="text-gray-500 pr-2">
+                        <div className="pr-2 text-gray-500">
                           {/* Change color of check mark if user completed all flashcards */}
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth="2"
-                            stroke="currentColor"
+                            stroke={`${ progressPercentage === 100 ? '#00c89e' : 'currentColor' }`}
                             className="w-6 h-6"
                           >
                             <path
@@ -248,7 +247,7 @@ export default function Sets({ params }) {
                               </span>
                             )}
                             <span className="text-sm text-gray-500">
-                              {studiedCards} of {totalCards} flashcards studied
+                              {studiedCards} of { set.flashcardCount ? set.flashcardCount : 0 } flashcards studied
                             </span>
 
                             {/* progress */}
@@ -259,8 +258,8 @@ export default function Sets({ params }) {
                                   width: `${progressPercentage}%`,
                                   backgroundColor:
                                     progressPercentage === 100
-                                      ? "green"
-                                      : "#6b46c1",
+                                      ? "#00c89e"
+                                      : "accent-pink",
                                 }}
                               ></div>
                             </div>
