@@ -15,6 +15,7 @@ import {
 import { getFlashcards } from "@/lib/features/flashcards/flashcardsSlice";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
+import DeleteConfirmation from "@/components/DeleteConfirmation";
 
 export default function Sets({ params }) {
   const dispatch = useAppDispatch();
