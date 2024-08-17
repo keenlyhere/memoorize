@@ -1,3 +1,5 @@
+import { db } from "@/firebase";
+import { collection, doc, getDoc, getDocs, increment, query, serverTimestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -88,7 +90,44 @@ export async function POST(req) {
             updatedAt: new Date().toISOString(),
         }));
 
-        return NextResponse.json(formattedFlashcards, { status: 200 });
+        // update AI generated set to be isAIGenerated: true
+        const flashcardSetRef = doc(db, 'FlashcardSets', setId);
+        await updateDoc(flashcardSetRef, {
+            isAIGenerated: true,
+            flashcardCount: increment(10),
+        })
+
+        const flashcardSetDoc = await getDoc(flashcardSetRef);
+        const flashcardSetData = flashcardSetDoc.data();
+
+        // batch write generated flashcards to firestore
+        const batch = writeBatch(db);
+        const flashcardsCollection = collection(db, 'Flashcards');
+        formattedFlashcards.forEach((flashcard) => {
+            const flashcardRef = doc(flashcardsCollection);
+            batch.set(flashcardRef, {
+                ...flashcard,
+                id: flashcardRef.id,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+            })
+        });
+
+        await batch.commit();
+
+        const newAIFlashcardsRef = collection(db, 'Flashcards');
+        const newAIFlashcardsQuery = query(
+            newAIFlashcardsRef,
+            where('setId', '==', setId)
+        );
+        const newAIFlashcardsDocs = await getDocs(newAIFlashcardsQuery);
+        const newAIFlashcardsData = newAIFlashcardsDocs.docs.map(doc => ({
+            ...doc.data()
+        }));
+
+        console.log('newAIFlashcardsData:', newAIFlashcardsData);
+
+        return NextResponse.json(newAIFlashcardsData, { status: 200 });
     } catch (error) {
         console.error("Error generating flashcards:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });

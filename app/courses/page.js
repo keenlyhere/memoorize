@@ -225,6 +225,7 @@ export default function Courses() {
 																			progressPercentage === 100
 																				? "#00c89e"
 																				: "#e0b9c9",
+																		animation: `${progressPercentage > 0 ? 'progress 2s ease-in-out' : 'none'}`
 																	}}
 																></div>
 															</div>

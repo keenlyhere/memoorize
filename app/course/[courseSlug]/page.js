@@ -62,8 +62,12 @@ export default function Sets({ params }) {
   const calculateCardProgress = (set) => {
     const currentSet = allFlashcardsPerSet[set.id];
 
-    const studiedCards = Object.values(currentSet).filter((flashcard) => flashcard.lastReviewedAt !== null).length;
-    console.log('studiedCards:', studiedCards);
+    let studiedCards = 0;
+
+    if (currentSet && Object.keys(currentSet).length > 0) {
+      studiedCards = Object.values(currentSet).filter((flashcard) => flashcard.lastReviewedAt !== null).length;
+      console.log('studiedCards:', studiedCards);
+    }
 
     const progressPercentage = set.flashcardCount > 0 ? ( studiedCards / set.flashcardCount ) * 100 : 0;
     return { studiedCards, progressPercentage };
@@ -260,6 +264,7 @@ export default function Sets({ params }) {
                                     progressPercentage === 100
                                       ? "#00c89e"
                                       : "accent-pink",
+                                    animation: `${progressPercentage > 0 ? 'progress 2s ease-in-out' : 'none'}`
                                 }}
                               ></div>
                             </div>
