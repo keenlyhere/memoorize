@@ -24,7 +24,6 @@ export default function MainLayout({ children }) {
 						avatar: user.imageUrl,
 					})
 				);
-				console.log('user:', user)
 			} else {
 				// clear user information in Redux store if not signed in
 				dispatch(clearUser());

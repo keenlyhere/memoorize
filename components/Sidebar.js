@@ -5,22 +5,27 @@ import { SignOutButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { clearUser } from "@/lib/features/users/userSlice";
+import { clearUser, getSubscriptionPlan } from "@/lib/features/users/userSlice";
 import Image from "next/image";
+import { isPaidPlan } from "@/utils/isPaidPlan";
 
-export default function Sidebar({ user }) {
+export default function Sidebar() {
     const dispatch = useAppDispatch();
     const currentPage = usePathname();
-    // const user = useAppSelector((state) => state.user);
+    const user = useAppSelector((state) => state.user);
     const [ isLoaded, setIsLoaded ] = useState(false);
     const [ isOpen, setIsOpen ] = useState(false);
+    const [ isSubscribed, setIsSubscribed ] = useState(null);
 
     useEffect(() => {
-        if (user && user.isAuthenticated) {
-            setIsLoaded(true);
-            console.log('user:', user)
+        if (user && user.isAuthenticated && !isLoaded) {
+            dispatch(getSubscriptionPlan(user.id))
+                .then(() => {
+                    setIsSubscribed(isPaidPlan(user.subscriptionPlanId))
+                    setIsLoaded(true);
+                });
         }
-    }, [user, setIsLoaded]);
+    }, [user, isLoaded, dispatch]);
 
     useEffect(() => {
         if (currentPage === '/courses' || currentPage === '/sets') {
@@ -79,12 +84,16 @@ export default function Sidebar({ user }) {
                         </Link>
                     </li>
                 </ul> */}
-                <Link href="/recall" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/recall' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/recall' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
-                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
-                    </svg>
-                    <span className={`text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray group-hover:text-light-gray dark:group-hover:text-light-gray group-hover:text-primary-purple ${ currentPage === '/recall' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>Recall</span>
-                </Link>
+                {
+                    isSubscribed && (
+                        <Link href="/recall" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/recall' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/recall' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
+                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
+                            </svg>
+                            <span className={`text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray group-hover:text-light-gray dark:group-hover:text-light-gray group-hover:text-primary-purple ${ currentPage === '/recall' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>Recall</span>
+                        </Link>
+                    )
+                }
                 <Link href="/settings" className={`lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/settings' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`lg:me-2.5 text-sm text-gray-500 lg:group-hover:text-light-gray dark:text-light-gray lg:group-hover:text-light-gray group-hover:text-primary-purple dark:group-hover:text-white size-6 ${ currentPage === '/settings' ? 'active lg:[&.active]:text-white [&.active]:text-primary-purple' : '' }`}>
                         <path d="M18.75 12.75h1.5a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM12 6a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 6ZM12 18a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 18ZM3.75 6.75h1.5a.75.75 0 1 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM5.25 18.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 0 1.5ZM3 12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 12ZM9 3.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM12.75 12a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0ZM9 15.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" />
@@ -104,7 +113,8 @@ export default function Sidebar({ user }) {
                 ) : (
                     <div className="w-10 h-10 rounded-full bg-gray-300" />
                 )}
-                <p>{ user?.fullName }</p>
+                <p className="dark:text-light-gray grow">{ user?.fullName }</p>
+                <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{ user?.subscriptionPlanName }</span>
             </div>
         </div>
   )
