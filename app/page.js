@@ -149,13 +149,15 @@ export default function Home() {
       {/* Header */}
       <header className="bg-light-gray text-dark-gray py-6 shadow-md">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-3xl font-bold">
-            me
-            <span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">
-              moo
-            </span>
-            rize
-          </h1>
+          <a href="/">
+            <h1 className="text-3xl font-bold">
+              me
+              <span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">
+                moo
+              </span>
+              rize
+            </h1>
+          </a>
           <nav className="flex items-center space-x-6">
             <a href="#features" className="hover:text-accent-pink">
               Features

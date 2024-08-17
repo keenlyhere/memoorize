@@ -35,7 +35,9 @@ export default function Sidebar({ user }) {
   return (
         <div className="lg:w-64 lg:h-screen lg:fixed lg:top-0 lg:left-0 lg:flex lg:flex-col lg:shadow-lg lg:space-y-4 lg:px-4 lg:py-6 lg:block lg:overflow-y-auto lg:border-0 fixed bottom-0 left-0 z-50 w-full h-20 bg-white border-t border-gray-200 dark:bg-dark-gray dark:border-gray-600">
             {/* logo */}
-            <h1 className="lg:block text-3xl font-bold hidden text-center">me<span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">moo</span>rize</h1>
+            <a href="/">
+                <h1 className="lg:block text-3xl font-bold hidden text-center">me<span className="bg-gradient-to-l text-transparent bg-clip-text inline-block">moo</span>rize</h1>
+            </a>
             {/* main sidebar links */}
             <div className="lg:flex-col lg:justify-start lg:items-start lg:pt-5 h-full w-full font-medium flex justify-center items-center lg:gap-y-1.5">
                 <Link href="/dashboard" className={`transition ease-out delay-50 duration-300 lg:block lg:flex lg:h-max lg:py-2 lg:px-4 lg:rounded-lg lg:w-full lg:hover:bg-gradient-to-r lg:hover:opacity-75 lg:flex lg:flex-row lg:items-center lg:justify-start lg:hover:text-white inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 h-full dark:hover:bg-accent-pink/25 dark:hover:opacity-100 dark:hover:text-white text-gray-500 group ${ currentPage === '/dashboard' ? 'active lg:[&.active]:bg-gradient-to-r lg:[&.active]:opacity-75 lg:dark:[&.active]:opacity-100' : '' }`}>
