@@ -58,7 +58,7 @@ export default function AddCourseForm({
 
   useEffect(() => {
     fetchPlanDetails();
-  }, [fetchPlanDetails]);
+  }, []);
 
   //autofill prompt box with course name
   useEffect(() => {
