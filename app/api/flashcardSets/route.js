@@ -95,7 +95,7 @@ export async function POST(request) {
 			console.log('flashcardSetsSnapshot.size:', flashcardSetsSnapshot.size, 'setLimit:', setLimit);
 			console.log('Error: you have reached the flashcard set limit for your subscription plan.')
 			return NextResponse.json(
-				{ error: "You have reached your flashcard set limit " },
+				{ error: `You have reached your flashcard set limit of ${setLimit} on the ${subscriptionPlanData.name} plan.` },
 				{ status: 403 }
 			);
 		}

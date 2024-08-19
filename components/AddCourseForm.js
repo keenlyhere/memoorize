@@ -2,7 +2,7 @@
 import { addCourse } from "@/lib/features/courses/coursesSlice";
 import { addFlashcardSet } from "@/lib/features/flashcardSets/flashcardSetsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 
@@ -23,47 +23,42 @@ export default function AddCourseForm({
   const [errors, setErrors] = useState(null);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const fetchPlanDetails = async () => {
-      try {
-        const userDoc = await getDoc(doc(db, "Users", userId));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUserData(userDoc.data());
-          const subscriptionPlan = userData.subscriptionPlan;
+  const fetchPlanDetails = useCallback(async () => {
+    try {
+      const userDoc = await getDoc(doc(db, "Users", userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const subscriptionPlan = userData.subscriptionPlan;
 
-          if (subscriptionPlan) {
-            const planDoc = await getDoc(
-              doc(db, "SubscriptionPlans", subscriptionPlan)
-            );
-            if (planDoc.exists()) {
-              setPlanDetails(planDoc.data());
-            } else {
-              console.error("Subscription plan does not exist in Firestore");
-              setError("Failed to load subscription plan.");
-            }
+        if (subscriptionPlan) {
+          const planDoc = await getDoc(
+            doc(db, "SubscriptionPlans", subscriptionPlan)
+          );
+          if (planDoc.exists()) {
+            setPlanDetails(planDoc.data());
           } else {
-            console.error("User does not have a subscription plan");
-            setError("Failed to load user subscription plan.");
+            console.error("Subscription plan does not exist in Firestore");
+            setErrors("Failed to load subscription plan.");
           }
         } else {
-          console.error("User does not exist in Firestore");
-          setError("User not found.");
+          console.error("User does not have a subscription plan");
+          setErrors("Failed to load user subscription plan.");
         }
-      } catch (error) {
-        console.error("Error fetching subscription plan:", error);
-        setError("Error fetching subscription plan.");
-      } finally {
-        setLoading(false);
+      } else {
+        console.error("User does not exist in Firestore");
+        setErrors("User not found.");
       }
-    };
-
-    fetchPlanDetails();
+    } catch (error) {
+      console.error("Error fetching subscription plan:", error);
+      setErrors("Error fetching subscription plan.");
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    fetchPlanDetails();
+  }, [fetchPlanDetails]);
 
   //autofill prompt box with course name
   useEffect(() => {
@@ -133,6 +128,10 @@ export default function AddCourseForm({
     }
   };
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-4 text-dark-gray">
@@ -185,12 +184,15 @@ export default function AddCourseForm({
         </>
       )}
 
-      <div className="h-4 mb-4">
-        {status === "failed" && <p className="text-red-500 text-sm">{error}</p>}
-        {errors && <p className="text-red-500 text-sm">{errors}</p>}
+      <div className="h-4 mb-8">
+        {status === "failed" && (
+          <p className="text-red-500 text-sm mb-2">{error}</p>
+        )}
+        {errors && <p className="text-red-500 text-sm mb-2">{errors}</p>} //
+        Updated this line
       </div>
 
-      {isGenerating && aiGeneration && (
+      {!errors && isGenerating && aiGeneration && (
         <p className="text-blue-500 text-sm mb-4">
           Your cards are being generated...
         </p>
