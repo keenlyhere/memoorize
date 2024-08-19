@@ -17,48 +17,48 @@ export default function AddCourseForm({
   const [title, setTitle] = useState("");
   const [aiGeneration, setAiGeneration] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
-  const [planDetails, setPlanDetails] = useState(null);
+//   const [planDetails, setPlanDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errors, setErrors] = useState(null);
   const dispatch = useAppDispatch();
 
-  const fetchPlanDetails = useCallback(async () => {
-    try {
-      const userDoc = await getDoc(doc(db, "Users", userId));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const subscriptionPlan = userData.subscriptionPlan;
+//   const fetchPlanDetails = useCallback(async () => {
+//     try {
+//       const userDoc = await getDoc(doc(db, "Users", userId));
+//       if (userDoc.exists()) {
+//         const userData = userDoc.data();
+//         const subscriptionPlan = userData.subscriptionPlan;
 
-        if (subscriptionPlan) {
-          const planDoc = await getDoc(
-            doc(db, "SubscriptionPlans", subscriptionPlan)
-          );
-          if (planDoc.exists()) {
-            setPlanDetails(planDoc.data());
-          } else {
-            console.error("Subscription plan does not exist in Firestore");
-            setErrors("Failed to load subscription plan.");
-          }
-        } else {
-          console.error("User does not have a subscription plan");
-          setErrors("Failed to load user subscription plan.");
-        }
-      } else {
-        console.error("User does not exist in Firestore");
-        setErrors("User not found.");
-      }
-    } catch (error) {
-      console.error("Error fetching subscription plan:", error);
-      setErrors("Error fetching subscription plan.");
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+//         if (subscriptionPlan) {
+//           const planDoc = await getDoc(
+//             doc(db, "SubscriptionPlans", subscriptionPlan)
+//           );
+//           if (planDoc.exists()) {
+//             setPlanDetails(planDoc.data());
+//           } else {
+//             console.error("Subscription plan does not exist in Firestore");
+//             setErrors("Failed to load subscription plan.");
+//           }
+//         } else {
+//           console.error("User does not have a subscription plan");
+//           setErrors("Failed to load user subscription plan.");
+//         }
+//       } else {
+//         console.error("User does not exist in Firestore");
+//         setErrors("User not found.");
+//       }
+//     } catch (error) {
+//       console.error("Error fetching subscription plan:", error);
+//       setErrors("Error fetching subscription plan.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [userId]);
 
-  useEffect(() => {
-    fetchPlanDetails();
-  }, []);
+//   useEffect(() => {
+//     fetchPlanDetails();
+//   }, []);
 
   //autofill prompt box with course name
   useEffect(() => {
@@ -75,20 +75,20 @@ export default function AddCourseForm({
       return;
     }
 
-    // Check flashcard limit if generating AI flashcards
-    if (aiGeneration && planDetails) {
-      const { flashcardLimit } = planDetails;
-      if (
-        flashcardLimit !== null &&
-        flashcardLimit <= planDetails.currentFlashcardCount
-      ) {
-        setErrors(
-          `You have reached your flashcard limit of ${flashcardLimit}.`
-        );
-        setIsGenerating(false);
-        return;
-      }
-    }
+    // // Check flashcard limit if generating AI flashcards
+    // if (aiGeneration && planDetails) {
+    //   const { flashcardLimit } = planDetails;
+    //   if (
+    //     flashcardLimit !== null &&
+    //     flashcardLimit <= planDetails.currentFlashcardCount
+    //   ) {
+    //     setErrors(
+    //       `You have reached your flashcard limit of ${flashcardLimit}.`
+    //     );
+    //     setIsGenerating(false);
+    //     return;
+    //   }
+    // }
 
     const newAdd = {
       title,
@@ -128,9 +128,9 @@ export default function AddCourseForm({
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+//   if (loading) {
+//     return <p>Loading...</p>;
+//   }
 
   return (
     <form onSubmit={handleSubmit}>
