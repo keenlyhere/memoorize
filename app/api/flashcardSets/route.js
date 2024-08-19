@@ -48,96 +48,87 @@ export async function GET(request) {
 
 // POST (add) a flashcard set
 export async function POST(request) {
-	try {
-		const { title, courseId, userId } = await request.json();
+    try {
+        const { title, courseId, userId } = await request.json();
 
-		if (!title || !courseId || !userId) {
-			return NextResponse.json({ error: "Title, Course ID, and User ID are required" }, { status: 400 });
-		}
+        if (!title || !courseId || !userId) {
+            return NextResponse.json({ error: "Title, Course ID, and User ID are required" }, { status: 400 });
+        }
 
-		const userDocRef = doc(db, "Users", userId);
-		const userSnapshot = await getDoc(userDocRef);
+        // Fetch user data
+        const userDocRef = doc(db, "Users", userId);
+        const userSnapshot = await getDoc(userDocRef);
 
-		if (!userSnapshot.exists()) {
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
-		}
+        if (!userSnapshot.exists()) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
 
-		const userData = userSnapshot.data();
-		const subscriptionPlanId = userData.subscriptionPlan;
+        const userData = userSnapshot.data();
+        const subscriptionPlanId = userData.subscriptionPlan;
 
-		// get subscription plan data
-		const subscriptionPlanRef = doc(db, "SubscriptionPlans", subscriptionPlanId);
-		const subscriptionPlanSnapshot = await getDoc(subscriptionPlanRef);
+        // Fetch subscription plan data
+        const subscriptionPlanRef = doc(db, "SubscriptionPlans", subscriptionPlanId);
+        const subscriptionPlanSnapshot = await getDoc(subscriptionPlanRef);
 
-		if (!subscriptionPlanSnapshot.exists()) {
-			return NextResponse.json({ error: "Subscription plan not found" }, { status: 404 });
-		}
+        if (!subscriptionPlanSnapshot.exists()) {
+            return NextResponse.json({ error: "Subscription plan not found" }, { status: 404 });
+        }
 
-		const subscriptionPlanData = subscriptionPlanSnapshot.data();
-		const setLimit = subscriptionPlanData.setLimit === null ? Infinity : subscriptionPlanData.setLimit;
+        const subscriptionPlanData = subscriptionPlanSnapshot.data();
+        const setLimit = subscriptionPlanData.setLimit === null ? Infinity : subscriptionPlanData.setLimit;
 
-		// check if user exceeded set limit
-		const flashcardSetsCollection = collection(db, "FlashcardSets");
-		const flashcardSetsQuery = query(
-			flashcardSetsCollection,
-			where("userId", "==", userId),
-		)
-		const flashcardSetsSnapshot = await getDocs(
-			flashcardSetsQuery,
-		);
-		const flashcardSetsData = flashcardSetsSnapshot.docs.map(doc => ({
-			id: doc.id,
-			...doc.data(),
-		}));
-		console.log('flashcardSetsData:', flashcardSetsData)
+        // Check if the user has reached their set limit
+        const flashcardSetsCollection = collection(db, "FlashcardSets");
+        const flashcardSetsQuery = query(
+            flashcardSetsCollection,
+            where("userId", "==", userId)
+        );
+        const flashcardSetsSnapshot = await getDocs(flashcardSetsQuery);
 
-		if (flashcardSetsSnapshot.size >= setLimit) {
-			console.log('flashcardSetsSnapshot.size:', flashcardSetsSnapshot.size, 'setLimit:', setLimit);
-			console.log('Error: you have reached the flashcard set limit for your subscription plan.')
-			return NextResponse.json(
-				{ error: `You have reached your flashcard set limit of ${setLimit} on the ${subscriptionPlanData.name} plan.` },
-				{ status: 403 }
-			);
-		}
+        if (flashcardSetsSnapshot.size >= setLimit) {
+            return NextResponse.json(
+                { error: `You have reached your flashcard set limit of ${setLimit} on the ${subscriptionPlanData.name} plan.` },
+                { status: 403 }
+            );
+        }
 
-		// add new flashcard set
-		const newSetDocRef = await addDoc(flashcardSetsCollection, {
-			title,
-			courseId,
-			userId,
-			flashcardCount: 0,
-			createdAt: serverTimestamp(),
-			updatedAt: serverTimestamp(),
-		});
+        // Add new flashcard set
+        const newSetDocRef = await addDoc(flashcardSetsCollection, {
+            title,
+            courseId,
+            userId,
+            flashcardCount: 0,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+        });
 
-		await updateDoc(newSetDocRef, {
-			id: newSetDocRef.id,
-		});
+        await updateDoc(newSetDocRef, {
+            id: newSetDocRef.id,
+        });
 
-		// update the set count in the corresponding course
-		const courseDocRef = doc(db, 'Courses', courseId);
-		await updateDoc(courseDocRef, {
-			setCount: increment(1),
-		})
+        // Update the set count in the corresponding course
+        const courseDocRef = doc(db, 'Courses', courseId);
+        await updateDoc(courseDocRef, {
+            setCount: increment(1),
+        });
 
-		// fetch updated course data
-		const updatedCourseSnapshot = await getDoc(courseDocRef);
-		const updatedCourseData = updatedCourseSnapshot.data();
+        // Fetch updated course data
+        const updatedCourseSnapshot = await getDoc(courseDocRef);
+        const updatedCourseData = updatedCourseSnapshot.data();
 
-		const newSetRef = await getDoc(newSetDocRef);
-		const newSetData = newSetRef.data();
+        const newSetRef = await getDoc(newSetDocRef);
+        const newSetData = newSetRef.data();
 
-		const response = {
-			newSet: newSetData,
-			updatedCourse: updatedCourseData
-		}
+        const response = {
+            newSet: newSetData,
+            updatedCourse: updatedCourseData
+        };
 
-
-		return NextResponse.json(response, { status: 200 });
-	} catch (error) {
+        return NextResponse.json(response, { status: 200 });
+    } catch (error) {
         console.error('Error adding flashcard set:', error.message);
-		return NextResponse.json({ error: error.message }, { status: 500 });
-	}
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
 
 // DELETE flashcard set
