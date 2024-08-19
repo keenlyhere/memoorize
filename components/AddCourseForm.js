@@ -188,8 +188,7 @@ export default function AddCourseForm({
         {status === "failed" && (
           <p className="text-red-500 text-sm mb-2">{error}</p>
         )}
-        {errors && <p className="text-red-500 text-sm mb-2">{errors}</p>} //
-        Updated this line
+        {errors && <p className="text-red-500 text-sm mb-2">{errors}</p>}
       </div>
 
       {!errors && isGenerating && aiGeneration && (
