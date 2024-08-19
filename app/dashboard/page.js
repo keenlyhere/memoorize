@@ -33,7 +33,7 @@ export default function Dashboard() {
                     setIsLoaded(true); // Ensure loading state is handled even on failure
                 });
         }
-    }, [currUser, dispatch]);
+    }, [currUser, dispatch, fetchDashboardData]);
 
     const fetchDashboardData = async () => {
         try {
